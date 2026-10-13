@@ -22,6 +22,21 @@ public class SqliteGeraeteRepository(Datenbank datenbank) : IGeraeteRepository
         return geraete;
     }
 
+    public bool InventarnummerVergeben(string inventarnummer, int ausserGeraetId)
+    {
+        using var verbindung = datenbank.Oeffnen();
+        using var befehl = verbindung.CreateCommand();
+        befehl.CommandText = """
+            SELECT EXISTS (
+                SELECT 1 FROM Geraet
+                WHERE Inventarnummer = $inventarnummer AND Id <> $id)
+            """;
+        befehl.Parameters.AddWithValue("$inventarnummer", inventarnummer);
+        befehl.Parameters.AddWithValue("$id", ausserGeraetId);
+
+        return Convert.ToBoolean(befehl.ExecuteScalar());
+    }
+
     public void Hinzufuegen(Geraet geraet)
     {
         using var verbindung = datenbank.Oeffnen();

@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="Geraeteausleihe.Core/Geraeteausleihe.Core.csproj" />
   <Project Path="Geraeteausleihe.Desktop/Geraeteausleihe.Desktop.csproj" />
+  <Project Path="Geraeteausleihe.Tests/Geraeteausleihe.Tests.csproj" />
 </Solution>

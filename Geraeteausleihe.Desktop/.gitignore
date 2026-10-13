@@ -1,0 +1,13 @@
+# Visual Studio: local settings and caches
+.vs/
+*.user
+*.suo
+*.sln.docstates
+
+# Generated .NET build and test output
+[Bb]in/
+[Oo]bj/
+TestResults/
+
+# Office lock files
+~$*

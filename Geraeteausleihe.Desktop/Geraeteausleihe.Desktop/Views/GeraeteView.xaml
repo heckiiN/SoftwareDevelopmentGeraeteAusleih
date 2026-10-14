@@ -1,17 +1,26 @@
 <UserControl x:Class="Geraeteausleihe.Desktop.Views.GeraeteView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- Oben ausgerichtet: die Karte wächst mit den Zeilen und scrollt erst, wenn der Platz nicht reicht -->
-    <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
-        <DataGrid ItemsSource="{Binding Geraete}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Inventarnummer" Binding="{Binding Inventarnummer}" Width="140"
-                                    ElementStyle="{StaticResource Hervorgehoben}" />
-                <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Bezeichnung}" Width="180"
-                                    ElementStyle="{StaticResource Hervorgehoben}" />
-                <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" Width="*" />
-                <DataGridTemplateColumn Header="Aktiv" Width="90" CellTemplate="{StaticResource AktivSpalte}" />
-            </DataGrid.Columns>
-        </DataGrid>
-    </Border>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,16">
+            <TextBox Text="{Binding Suchtext, UpdateSourceTrigger=PropertyChanged}" Tag="Geräte suchen..."
+                     Style="{StaticResource Suchfeld}" Width="280" />
+            <CheckBox Content="Nur aktive Geräte" IsChecked="{Binding NurAktive}" Margin="16,0,0,0"
+                      VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Oben ausgerichtet: die Karte wächst mit den Zeilen und scrollt erst, wenn der Platz nicht reicht -->
+        <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
+            <DataGrid ItemsSource="{Binding Geraete}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Inventarnummer" Binding="{Binding Inventarnummer}" Width="140"
+                                        ElementStyle="{StaticResource Hervorgehoben}" />
+                    <DataGridTextColumn Header="Bezeichnung" Binding="{Binding Bezeichnung}" Width="180"
+                                        ElementStyle="{StaticResource Hervorgehoben}" />
+                    <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" Width="*" />
+                    <DataGridTemplateColumn Header="Aktiv" Width="90" CellTemplate="{StaticResource AktivSpalte}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </DockPanel>
 </UserControl>

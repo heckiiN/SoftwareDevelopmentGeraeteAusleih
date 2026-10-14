@@ -6,14 +6,28 @@ namespace Geraeteausleihe.Desktop.ViewModels;
 
 public partial class GeraeteViewModel : ObservableObject
 {
-    private readonly GeraeteVerwaltung _verwaltung;
+    private readonly IReadOnlyList<Geraet> _alleGeraete;
 
     public GeraeteViewModel(GeraeteVerwaltung verwaltung)
     {
-        _verwaltung = verwaltung;
-        Geraete = _verwaltung.AlleLaden();
+        _alleGeraete = verwaltung.AlleLaden();
+        Suchtext = "";
+        NurAktive = true;
     }
 
     [ObservableProperty]
-    public partial IReadOnlyList<Geraet> Geraete { get; private set; }
+    [NotifyPropertyChangedFor(nameof(Geraete))]
+    public partial string Suchtext { get; set; }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Geraete))]
+    public partial bool NurAktive { get; set; }
+
+    public IReadOnlyList<Geraet> Geraete => _alleGeraete
+        .Where(g => !NurAktive || g.Aktiv)
+        .Where(g => Passt(g.Inventarnummer) || Passt(g.Bezeichnung) || Passt(g.Beschreibung))
+        .ToList();
+
+    private bool Passt(string? feld) =>
+        feld is not null && feld.Contains(Suchtext.Trim(), StringComparison.CurrentCultureIgnoreCase);
 }

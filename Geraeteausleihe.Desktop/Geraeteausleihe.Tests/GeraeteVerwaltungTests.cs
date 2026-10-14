@@ -90,6 +90,29 @@ public sealed class GeraeteVerwaltungTests : IDisposable
     }
 
     [Fact]
+    public void Deaktiviertes_Geraet_bleibt_erhalten_und_ist_inaktiv()
+    {
+        var geraet = Beamer();
+        _verwaltung.Speichern(geraet);
+
+        _verwaltung.Deaktivieren(geraet);
+
+        Assert.False(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
+    }
+
+    [Fact]
+    public void Deaktiviertes_Geraet_laesst_sich_wieder_aktivieren()
+    {
+        var geraet = Beamer();
+        _verwaltung.Speichern(geraet);
+        _verwaltung.Deaktivieren(geraet);
+
+        _verwaltung.Aktivieren(geraet);
+
+        Assert.True(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
+    }
+
+    [Fact]
     public void Geraete_bleiben_nach_erneutem_Oeffnen_der_Datenbank_erhalten()
     {
         _verwaltung.Speichern(Beamer());

@@ -25,4 +25,17 @@ public class GeraeteVerwaltung(IGeraeteRepository geraete)
         else
             geraete.Aktualisieren(geraet);
     }
+
+    // Geräte werden nie gelöscht, damit die Ausleihhistorie erhalten bleibt.
+    public void Deaktivieren(Geraet geraet)
+    {
+        geraet.Aktiv = false;
+        geraete.Aktualisieren(geraet);
+    }
+
+    public void Aktivieren(Geraet geraet)
+    {
+        geraet.Aktiv = true;
+        geraete.Aktualisieren(geraet);
+    }
 }

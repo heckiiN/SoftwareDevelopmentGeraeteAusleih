@@ -102,6 +102,37 @@ public sealed class ReservierungDialogTests : IDisposable
     }
 
     [Fact]
+    public void T12_Datenbankfehler_zeigt_Meldung_im_offenen_Dialog()
+    {
+        _db.Schreibschutz();
+        _dialoge.Bedienen = dialog =>
+        {
+            Eingeben("Lena Beispiel")(dialog);
+            Assert.Equal(Meldungen.Datenbankfehler, dialog.Fehlermeldung);
+            dialog.AbbrechenCommand.Execute(null);
+        };
+
+        _formular.NeuerEntleiherCommand.Execute(null);
+
+        Assert.Single(_entleiher.AlleLaden());
+        Assert.Equal("Max Mustermann", _formular.AusgewaehlterEntleiher?.Name);
+    }
+
+    [Fact]
+    public void Datenbankfehler_beim_Reservieren_laesst_das_Formular_offen()
+    {
+        var geschlossen = false;
+        _formular.Schliessen += _ => geschlossen = true;
+        _db.Schreibschutz();
+
+        _formular.ReservierenCommand.Execute(null);
+
+        Assert.False(geschlossen);
+        Assert.Equal(Meldungen.Datenbankfehler, _formular.Fehlermeldung);
+        Assert.Empty(_reservierungen.AlleLaden());
+    }
+
+    [Fact]
     public void T13_Abgebrochene_Reservierung_behaelt_den_neuen_Entleiher()
     {
         _dialoge.Bedienen = Eingeben("Lena Beispiel");

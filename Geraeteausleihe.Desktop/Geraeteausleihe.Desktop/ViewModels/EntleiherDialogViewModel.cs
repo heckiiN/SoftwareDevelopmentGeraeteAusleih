@@ -42,15 +42,10 @@ public partial class EntleiherDialogViewModel : DialogViewModel
             Kontakt = Kontakt
         };
 
-        try
+        if (Versuchen(() => _verwaltung.Speichern(person)))
         {
-            _verwaltung.Speichern(person);
             Gespeichert = person;
             Beenden(true);
-        }
-        catch (FachlicherFehler fehler)
-        {
-            Fehlermeldung = fehler.Message;
         }
     }
 }

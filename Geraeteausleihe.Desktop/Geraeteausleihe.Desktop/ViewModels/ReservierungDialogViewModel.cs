@@ -90,21 +90,20 @@ public partial class ReservierungDialogViewModel : DialogViewModel
             return;
         }
 
-        try
+        var geraetId = AusgewaehltesGeraet.Id;
+        Reservierung? konflikt = null;
+        if (!Versuchen(() => konflikt = _verwaltung.VerfuegbarkeitPruefen(geraetId, beginn, ende)))
         {
-            var konflikt = _verwaltung.VerfuegbarkeitPruefen(AusgewaehltesGeraet.Id, beginn, ende);
-            if (konflikt is null)
-            {
-                Verfuegbarkeitsmeldung = "Der gewählte Zeitraum ist verfügbar.";
-            }
-            else
-            {
-                Fehlermeldung = ReservierungsVerwaltung.BelegtMeldung(konflikt);
-            }
+            return;
         }
-        catch (FachlicherFehler fehler)
+
+        if (konflikt is null)
         {
-            Fehlermeldung = fehler.Message;
+            Verfuegbarkeitsmeldung = "Der gewählte Zeitraum ist verfügbar.";
+        }
+        else
+        {
+            Fehlermeldung = ReservierungsVerwaltung.BelegtMeldung(konflikt);
         }
     }
 
@@ -122,14 +121,11 @@ public partial class ReservierungDialogViewModel : DialogViewModel
             return;
         }
 
-        try
+        var geraetId = AusgewaehltesGeraet.Id;
+        var entleiherId = AusgewaehlterEntleiher.Id;
+        if (Versuchen(() => _verwaltung.Reservieren(geraetId, entleiherId, beginn, ende)))
         {
-            _verwaltung.Reservieren(AusgewaehltesGeraet.Id, AusgewaehlterEntleiher.Id, beginn, ende);
             Beenden(true);
-        }
-        catch (FachlicherFehler fehler)
-        {
-            Fehlermeldung = fehler.Message;
         }
     }
 

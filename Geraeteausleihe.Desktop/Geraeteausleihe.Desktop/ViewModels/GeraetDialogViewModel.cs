@@ -44,14 +44,9 @@ public partial class GeraetDialogViewModel : DialogViewModel
             Beschreibung = Beschreibung
         };
 
-        try
+        if (Versuchen(() => _verwaltung.Speichern(geraet)))
         {
-            _verwaltung.Speichern(geraet);
             Beenden(true);
-        }
-        catch (FachlicherFehler fehler)
-        {
-            Fehlermeldung = fehler.Message;
         }
     }
 }

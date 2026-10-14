@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Geraeteausleihe.Core.Dienste;
 using Geraeteausleihe.Core.Domain;
 using Geraeteausleihe.Desktop.Dienste;
+using Microsoft.Data.Sqlite;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
@@ -77,6 +78,10 @@ public partial class GeraeteViewModel : ObservableObject, IAktualisierbar
         catch (FachlicherFehler fehler)
         {
             _dialoge.Hinweis(fehler.Message);
+        }
+        catch (SqliteException)
+        {
+            _dialoge.Hinweis(Meldungen.Datenbankfehler);
         }
     }
 

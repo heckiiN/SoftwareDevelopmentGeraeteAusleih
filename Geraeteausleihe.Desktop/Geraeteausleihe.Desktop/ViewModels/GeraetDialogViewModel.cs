@@ -31,12 +31,6 @@ public partial class GeraetDialogViewModel : DialogViewModel
     [ObservableProperty]
     public partial string Beschreibung { get; set; }
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(HatFehler))]
-    public partial string? Fehlermeldung { get; set; }
-
-    public bool HatFehler => Fehlermeldung is not null;
-
     [RelayCommand]
     private void Speichern()
     {

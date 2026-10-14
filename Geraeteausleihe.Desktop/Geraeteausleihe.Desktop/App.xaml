@@ -23,6 +23,9 @@
             <DataTemplate DataType="{x:Type vm:GeraetDialogViewModel}">
                 <views:GeraetDialogView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EntleiherDialogViewModel}">
+                <views:EntleiherDialogView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
                 <views:PlatzhalterView />
             </DataTemplate>

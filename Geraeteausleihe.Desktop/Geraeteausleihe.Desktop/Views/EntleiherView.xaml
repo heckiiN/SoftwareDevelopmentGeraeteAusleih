@@ -3,6 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <DockPanel>
         <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <Button DockPanel.Dock="Right" Command="{Binding NeuerEntleiherCommand}" Style="{StaticResource PrimaerButton}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE8FA;" Style="{StaticResource Symbol}" FontSize="12" Margin="0,0,8,0" />
+                    <TextBlock Text="Neuer Entleiher" />
+                </StackPanel>
+            </Button>
             <TextBox Text="{Binding Suchtext, UpdateSourceTrigger=PropertyChanged}" Tag="Entleiher suchen..."
                      Style="{StaticResource Suchfeld}" Width="280" HorizontalAlignment="Left" />
         </DockPanel>
@@ -14,6 +20,17 @@
                                         ElementStyle="{StaticResource Hervorgehoben}" />
                     <DataGridTextColumn Header="Kontakt" Binding="{Binding Kontakt}" Width="*" />
                     <DataGridTemplateColumn Header="Status" Width="100" CellTemplate="{StaticResource StatusSpalte}" />
+                    <DataGridTemplateColumn Header="Bearbeiten" Width="100" HeaderStyle="{StaticResource KopfRechts}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="&#xE70F;" Style="{StaticResource SymbolButton}"
+                                        BorderBrush="{StaticResource Rahmen}" HorizontalAlignment="Right"
+                                        AutomationProperties.Name="Bearbeiten" ToolTip="Bearbeiten"
+                                        Command="{Binding DataContext.BearbeitenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

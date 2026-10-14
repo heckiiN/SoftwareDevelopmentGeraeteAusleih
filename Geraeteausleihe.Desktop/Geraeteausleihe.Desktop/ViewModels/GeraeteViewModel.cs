@@ -60,9 +60,13 @@ public partial class GeraeteViewModel : ObservableObject
     {
         var geraet = AusgewaehltesGeraet!;
         if (geraet.Aktiv)
+        {
             _verwaltung.Deaktivieren(geraet);
+        }
         else
+        {
             _verwaltung.Aktivieren(geraet);
+        }
         Laden();
     }
 

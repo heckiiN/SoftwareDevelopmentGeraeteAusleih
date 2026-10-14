@@ -10,6 +10,12 @@ public abstract partial class DialogViewModel : ObservableObject
 
     public abstract string Titel { get; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HatFehler))]
+    public partial string? Fehlermeldung { get; set; }
+
+    public bool HatFehler => Fehlermeldung is not null;
+
     protected void Beenden(bool gespeichert) => Schliessen?.Invoke(gespeichert);
 
     [RelayCommand]

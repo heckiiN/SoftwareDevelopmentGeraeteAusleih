@@ -1,0 +1,25 @@
+<UserControl x:Class="Geraeteausleihe.Desktop.Views.ReservierungenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBox Text="{Binding Suchtext, UpdateSourceTrigger=PropertyChanged}" Tag="Reservierungen filtern..."
+                     Style="{StaticResource Suchfeld}" Width="280" HorizontalAlignment="Left" />
+        </DockPanel>
+
+        <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
+            <DataGrid ItemsSource="{Binding Zeilen}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Gerät" Binding="{Binding Geraet}" Width="*"
+                                        ElementStyle="{StaticResource Hervorgehoben}" />
+                    <DataGridTextColumn Header="Entleiher" Binding="{Binding Entleiher}" Width="*" />
+                    <DataGridTextColumn Header="Beginn" Width="160"
+                                        Binding="{Binding Reservierung.Beginn, StringFormat='dd.MM.yyyy, HH:mm'}" />
+                    <DataGridTextColumn Header="Ende" Width="160"
+                                        Binding="{Binding Reservierung.Ende, StringFormat='dd.MM.yyyy, HH:mm'}" />
+                    <DataGridTemplateColumn Header="Status" Width="130" CellTemplate="{StaticResource ReservierungsStatusSpalte}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </DockPanel>
+</UserControl>

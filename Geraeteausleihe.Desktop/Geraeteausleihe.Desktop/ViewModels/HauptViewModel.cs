@@ -4,14 +4,14 @@ namespace Geraeteausleihe.Desktop.ViewModels;
 
 public partial class HauptViewModel : ObservableObject
 {
-    public HauptViewModel(GeraeteViewModel geraete, EntleiherViewModel entleiher)
+    public HauptViewModel(GeraeteViewModel geraete, EntleiherViewModel entleiher, ReservierungenViewModel reservierungen)
     {
         Navigation =
         [
             new("Übersicht", "", new PlatzhalterViewModel("Übersicht")),
             new("Geräte", "", geraete),
             new("Entleiher", "", entleiher),
-            new("Reservierungen", "", new PlatzhalterViewModel("Reservierungen")),
+            new("Reservierungen", "", reservierungen),
             new("Ausgabe & Rückgabe", "", new PlatzhalterViewModel("Ausgabe & Rückgabe"))
         ];
         AktuellerPunkt = Navigation[0];

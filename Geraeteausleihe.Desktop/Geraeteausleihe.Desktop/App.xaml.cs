@@ -31,15 +31,20 @@ public partial class App : Application
             return;
         }
 
+        var geraete = new SqliteGeraeteRepository(datenbank);
+        var entleiher = new SqliteEntleiherRepository(datenbank);
         var reservierungen = new SqliteReservierungsRepository(datenbank);
-        var geraeteVerwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(datenbank), reservierungen);
-        var entleiherVerwaltung = new EntleiherVerwaltung(new SqliteEntleiherRepository(datenbank), reservierungen);
+
+        var geraeteVerwaltung = new GeraeteVerwaltung(geraete, reservierungen);
+        var entleiherVerwaltung = new EntleiherVerwaltung(entleiher, reservierungen);
+        var reservierungsVerwaltung = new ReservierungsVerwaltung(reservierungen, geraete, entleiher);
 
         var dialoge = new DialogDienst();
 
         var hauptViewModel = new HauptViewModel(
             new GeraeteViewModel(geraeteVerwaltung, dialoge),
-            new EntleiherViewModel(entleiherVerwaltung, dialoge));
+            new EntleiherViewModel(entleiherVerwaltung, dialoge),
+            new ReservierungenViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung));
         new Hauptfenster { DataContext = hauptViewModel }.Show();
     }
 }

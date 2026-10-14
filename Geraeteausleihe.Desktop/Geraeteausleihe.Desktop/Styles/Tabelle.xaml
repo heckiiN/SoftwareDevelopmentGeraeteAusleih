@@ -97,4 +97,26 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
+    <DataTemplate x:Key="ReservierungsStatusSpalte">
+        <Border x:Name="Kennung" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left"
+                Background="{StaticResource WarnungHell}">
+            <TextBlock x:Name="Wort" Text="{Binding StatusText}" FontSize="11" FontWeight="SemiBold"
+                       Foreground="{StaticResource WarnungDunkel}" />
+        </Border>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Reservierung.Status}" Value="Ausgegeben">
+                <Setter TargetName="Kennung" Property="Background" Value="{StaticResource PrimaerHell}" />
+                <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource PrimaerDunkel}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Reservierung.Status}" Value="Zurueckgegeben">
+                <Setter TargetName="Kennung" Property="Background" Value="{StaticResource ErfolgHell}" />
+                <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource ErfolgDunkel}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Reservierung.Status}" Value="Storniert">
+                <Setter TargetName="Kennung" Property="Background" Value="{StaticResource Hover}" />
+                <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource TextGedaempft}" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
 </ResourceDictionary>

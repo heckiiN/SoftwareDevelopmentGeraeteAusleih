@@ -1,0 +1,47 @@
+<UserControl x:Class="Geraeteausleihe.Desktop.Views.AusgabeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Style="{StaticResource Karte}" Padding="14,10" Margin="0,0,0,16">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="&#xE946;" Style="{StaticResource Symbol}" Foreground="{StaticResource TextGedaempft}"
+                           Margin="0,0,10,0" />
+                <TextBlock Text="Hinweis: Ein Gerät kann erst erneut ausgegeben werden, wenn die vorherige Ausleihe zurückgegeben wurde."
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
+            <DataGrid ItemsSource="{Binding Zeilen}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Gerät" Binding="{Binding Geraet}" Width="*"
+                                        ElementStyle="{StaticResource Hervorgehoben}" />
+                    <DataGridTextColumn Header="Entleiher" Binding="{Binding Entleiher}" Width="*" />
+                    <DataGridTextColumn Header="Zeitraum" Binding="{Binding Zeitraum}" Width="250" />
+                    <DataGridTemplateColumn Header="Status" Width="120" CellTemplate="{StaticResource ReservierungsStatusSpalte}" />
+                    <DataGridTemplateColumn Header="Aktionen" Width="280">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <!-- Ist die Ausgabe gerade nicht möglich, steht der Grund daneben, vollständig im Tooltip -->
+                                <StackPanel Orientation="Horizontal">
+                                    <Button Content="Rückgabe" Style="{StaticResource PrimaerButton}" Height="28"
+                                            Visibility="{Binding IstAusgegeben, Converter={StaticResource Sichtbar}}"
+                                            CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.ZurueckgebenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                                    <Button Content="Ausgabe" Style="{StaticResource PrimaerButton}" Height="28"
+                                            Visibility="{Binding IstReserviert, Converter={StaticResource Sichtbar}}"
+                                            IsEnabled="{Binding KannAusgegebenWerden}"
+                                            CommandParameter="{Binding}"
+                                            Command="{Binding DataContext.AusgebenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                                    <TextBlock Text="{Binding Hindernis}" ToolTip="{Binding Hindernis}" FontSize="11"
+                                               Foreground="{StaticResource Fehler}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                               MaxWidth="155" MaxHeight="32" Margin="10,0,0,0" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+    </DockPanel>
+</UserControl>

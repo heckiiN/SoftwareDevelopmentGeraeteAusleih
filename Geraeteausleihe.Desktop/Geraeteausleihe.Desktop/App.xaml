@@ -23,6 +23,9 @@
             <DataTemplate DataType="{x:Type vm:ReservierungenViewModel}">
                 <views:ReservierungenView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AusgabeViewModel}">
+                <views:AusgabeView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:GeraetDialogViewModel}">
                 <views:GeraetDialogView />
             </DataTemplate>

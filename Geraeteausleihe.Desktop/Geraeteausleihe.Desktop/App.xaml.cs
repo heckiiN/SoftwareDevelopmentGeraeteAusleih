@@ -44,7 +44,8 @@ public partial class App : Application
         var hauptViewModel = new HauptViewModel(
             new GeraeteViewModel(geraeteVerwaltung, dialoge),
             new EntleiherViewModel(entleiherVerwaltung, dialoge),
-            new ReservierungenViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge));
+            new ReservierungenViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge),
+            new AusgabeViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge));
         new Hauptfenster { DataContext = hauptViewModel }.Show();
     }
 }

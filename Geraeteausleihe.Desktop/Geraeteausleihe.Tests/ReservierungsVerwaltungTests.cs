@@ -139,8 +139,10 @@ public sealed class ReservierungsVerwaltungTests : IDisposable
         var fehler = Assert.Throws<FachlicherFehler>(() => _verwaltung.Ausgeben(folge.Id));
 
         Assert.Equal("Das Gerät ist noch bei Max Mustermann (Rückgabe war bis 01.11.2026 12:00 geplant).", fehler.Message);
+        Assert.Equal(fehler.Message, _verwaltung.AusgabeHindernis(folge, _verwaltung.AlleLaden()));
 
         _verwaltung.Zurueckgeben(erste.Id);
+        Assert.Null(_verwaltung.AusgabeHindernis(folge, _verwaltung.AlleLaden()));
         _verwaltung.Ausgeben(folge.Id);
         Assert.Equal(ReservierungsStatus.Ausgegeben, _verwaltung.AlleLaden().Single(r => r.Id == folge.Id).Status);
     }

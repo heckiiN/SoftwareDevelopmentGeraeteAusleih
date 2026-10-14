@@ -36,24 +36,22 @@ public class Reservierung
     }
 
     // Ausgabe nur innerhalb des gebuchten Zeitraums: frühestens zum Beginn, spätestens kurz vor dem Ende.
+    // Liefert den Grund, warum jetzt nicht ausgegeben werden kann, oder null.
+    public string? AusgabeHindernis(DateTime jetzt) => Status switch
+    {
+        ReservierungsStatus.Ausgegeben => "Das Gerät ist bereits ausgegeben.",
+        ReservierungsStatus.Storniert => "Eine stornierte Reservierung kann nicht ausgegeben werden.",
+        ReservierungsStatus.Zurueckgegeben => "Diese Ausleihe ist bereits abgeschlossen.",
+        _ when jetzt < Beginn => $"Die Ausgabe ist erst ab {Beginn:dd.MM.yyyy HH:mm} möglich.",
+        _ when jetzt >= Ende => "Der Reservierungszeitraum ist bereits abgelaufen.",
+        _ => null
+    };
+
     public void Ausgeben(DateTime jetzt)
     {
-        switch (Status)
+        if (AusgabeHindernis(jetzt) is { } grund)
         {
-            case ReservierungsStatus.Ausgegeben:
-                throw new FachlicherFehler("Das Gerät ist bereits ausgegeben.");
-            case ReservierungsStatus.Storniert:
-                throw new FachlicherFehler("Eine stornierte Reservierung kann nicht ausgegeben werden.");
-            case ReservierungsStatus.Zurueckgegeben:
-                throw new FachlicherFehler("Diese Ausleihe ist bereits abgeschlossen.");
-        }
-        if (jetzt < Beginn)
-        {
-            throw new FachlicherFehler($"Die Ausgabe ist erst ab {Beginn:dd.MM.yyyy HH:mm} möglich.");
-        }
-        if (jetzt >= Ende)
-        {
-            throw new FachlicherFehler("Der Reservierungszeitraum ist bereits abgelaufen.");
+            throw new FachlicherFehler(grund);
         }
 
         Status = ReservierungsStatus.Ausgegeben;

@@ -50,17 +50,27 @@ public class ReservierungsVerwaltung(
         reservierungen.StatusSpeichern(reservierung);
     }
 
+    // Für die Ausgabeliste: Grund, warum die Reservierung gerade nicht ausgegeben werden kann, oder null.
+    public string? AusgabeHindernis(Reservierung reservierung, IEnumerable<Reservierung> bestehende)
+    {
+        var nochAusgegeben = Verfuegbarkeit.FindeNochAusgegebene(bestehende, reservierung);
+        if (nochAusgegeben is not null)
+        {
+            var name = entleiher.Laden(nochAusgegeben.EntleiherId)?.Name;
+            return $"Das Gerät ist noch bei {name} (Rückgabe war bis {nochAusgegeben.Ende:dd.MM.yyyy HH:mm} geplant).";
+        }
+
+        return reservierung.AusgabeHindernis(zeit.Jetzt);
+    }
+
     public void Ausgeben(int reservierungId)
     {
         var reservierung = FrischLaden(reservierungId);
 
-        var nochAusgegeben = Verfuegbarkeit.FindeNochAusgegebene(
-            reservierungen.BlockierendeLaden(reservierung.GeraetId), reservierung);
-        if (nochAusgegeben is not null)
+        var hindernis = AusgabeHindernis(reservierung, reservierungen.BlockierendeLaden(reservierung.GeraetId));
+        if (hindernis is not null)
         {
-            var name = entleiher.Laden(nochAusgegeben.EntleiherId)?.Name;
-            throw new FachlicherFehler(
-                $"Das Gerät ist noch bei {name} (Rückgabe war bis {nochAusgegeben.Ende:dd.MM.yyyy HH:mm} geplant).");
+            throw new FachlicherFehler(hindernis);
         }
 
         reservierung.Ausgeben(zeit.Jetzt);

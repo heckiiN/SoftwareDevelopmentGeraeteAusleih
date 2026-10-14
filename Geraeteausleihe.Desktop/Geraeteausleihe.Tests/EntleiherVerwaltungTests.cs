@@ -7,14 +7,30 @@ namespace Geraeteausleihe.Tests;
 public sealed class EntleiherVerwaltungTests : IDisposable
 {
     private readonly TestDatenbank _db = new();
+    private readonly SqliteReservierungsRepository _reservierungen;
     private readonly EntleiherVerwaltung _verwaltung;
 
     public EntleiherVerwaltungTests()
     {
-        _verwaltung = new EntleiherVerwaltung(new SqliteEntleiherRepository(_db.Datenbank));
+        _reservierungen = new SqliteReservierungsRepository(_db.Datenbank);
+        _verwaltung = new EntleiherVerwaltung(new SqliteEntleiherRepository(_db.Datenbank), _reservierungen);
     }
 
     public void Dispose() => _db.Dispose();
+
+    private void Reservieren(Entleiher person, ReservierungsStatus status)
+    {
+        var beamer = new Geraet { Inventarnummer = "G-001", Bezeichnung = "Beamer 01" };
+        new SqliteGeraeteRepository(_db.Datenbank).Hinzufuegen(beamer);
+        _reservierungen.AnlegenWennFrei(new Reservierung
+        {
+            GeraetId = beamer.Id,
+            EntleiherId = person.Id,
+            Beginn = new DateTime(2026, 11, 1, 9, 0, 0),
+            Ende = new DateTime(2026, 11, 1, 12, 0, 0),
+            Status = status
+        });
+    }
 
     private static Entleiher Mustermann() => new()
     {
@@ -76,12 +92,41 @@ public sealed class EntleiherVerwaltungTests : IDisposable
         Assert.True(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
     }
 
+    [Theory]
+    [InlineData(ReservierungsStatus.Reserviert)]
+    [InlineData(ReservierungsStatus.Ausgegeben)]
+    public void Entleiher_mit_offener_Reservierung_laesst_sich_nicht_deaktivieren(ReservierungsStatus status)
+    {
+        var person = Mustermann();
+        _verwaltung.Speichern(person);
+        Reservieren(person, status);
+
+        Assert.Throws<FachlicherFehler>(() => _verwaltung.Deaktivieren(person));
+        Assert.True(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
+    }
+
+    [Theory]
+    [InlineData(ReservierungsStatus.Storniert)]
+    [InlineData(ReservierungsStatus.Zurueckgegeben)]
+    public void Entleiher_mit_abgeschlossenen_Reservierungen_laesst_sich_deaktivieren(ReservierungsStatus status)
+    {
+        var person = Mustermann();
+        _verwaltung.Speichern(person);
+        Reservieren(person, status);
+
+        _verwaltung.Deaktivieren(person);
+
+        Assert.False(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
+    }
+
     [Fact]
     public void Entleiher_bleiben_nach_erneutem_Oeffnen_der_Datenbank_erhalten()
     {
         _verwaltung.Speichern(Mustermann());
 
-        var nachNeustart = new EntleiherVerwaltung(new SqliteEntleiherRepository(_db.NeuOeffnen()));
+        var datenbank = _db.NeuOeffnen();
+        var nachNeustart = new EntleiherVerwaltung(
+            new SqliteEntleiherRepository(datenbank), new SqliteReservierungsRepository(datenbank));
 
         Assert.Equal("Max Mustermann", Assert.Single(nachNeustart.AlleLaden()).Name);
     }

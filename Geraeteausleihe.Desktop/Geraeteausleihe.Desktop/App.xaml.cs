@@ -31,8 +31,9 @@ public partial class App : Application
             return;
         }
 
-        var geraeteVerwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(datenbank));
-        var entleiherVerwaltung = new EntleiherVerwaltung(new SqliteEntleiherRepository(datenbank));
+        var reservierungen = new SqliteReservierungsRepository(datenbank);
+        var geraeteVerwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(datenbank), reservierungen);
+        var entleiherVerwaltung = new EntleiherVerwaltung(new SqliteEntleiherRepository(datenbank), reservierungen);
 
         var dialoge = new DialogDienst();
 

@@ -23,6 +23,18 @@ public class SqliteReservierungsRepository(Datenbank datenbank) : IReservierungs
         return BlockierendeLaden(verbindung, null, geraetId);
     }
 
+    public bool GeraetHatOffene(int geraetId) => Existiert("""
+        SELECT EXISTS (
+            SELECT 1 FROM Reservierung
+            WHERE GeraetId = $id AND Status IN ('Reserviert', 'Ausgegeben'))
+        """, geraetId);
+
+    public bool EntleiherHatOffene(int entleiherId) => Existiert("""
+        SELECT EXISTS (
+            SELECT 1 FROM Reservierung
+            WHERE EntleiherId = $id AND Status IN ('Reserviert', 'Ausgegeben'))
+        """, entleiherId);
+
     public Reservierung? AnlegenWennFrei(Reservierung neu)
     {
         using var verbindung = datenbank.Oeffnen();
@@ -55,6 +67,16 @@ public class SqliteReservierungsRepository(Datenbank datenbank) : IReservierungs
         neu.Id = Convert.ToInt32(befehl.ExecuteScalar());
         transaktion.Commit();
         return null;
+    }
+
+    private bool Existiert(string sql, int id)
+    {
+        using var verbindung = datenbank.Oeffnen();
+        using var befehl = verbindung.CreateCommand();
+        befehl.CommandText = sql;
+        befehl.Parameters.AddWithValue("$id", id);
+
+        return Convert.ToBoolean(befehl.ExecuteScalar());
     }
 
     private static IReadOnlyList<Reservierung> BlockierendeLaden(

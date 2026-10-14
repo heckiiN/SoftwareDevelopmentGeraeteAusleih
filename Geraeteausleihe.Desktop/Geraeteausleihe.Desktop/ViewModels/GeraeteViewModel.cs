@@ -63,15 +63,22 @@ public partial class GeraeteViewModel : ObservableObject
     private void AktivUmschalten()
     {
         var geraet = AusgewaehltesGeraet!;
-        if (geraet.Aktiv)
+        try
         {
-            _verwaltung.Deaktivieren(geraet);
+            if (geraet.Aktiv)
+            {
+                _verwaltung.Deaktivieren(geraet);
+            }
+            else
+            {
+                _verwaltung.Aktivieren(geraet);
+            }
+            Laden();
         }
-        else
+        catch (FachlicherFehler fehler)
         {
-            _verwaltung.Aktivieren(geraet);
+            _dialoge.Hinweis(fehler.Message);
         }
-        Laden();
     }
 
     private bool IstGeraetAusgewaehlt() => AusgewaehltesGeraet is not null;

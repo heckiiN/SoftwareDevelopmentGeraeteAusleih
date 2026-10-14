@@ -11,4 +11,10 @@ public class DialogDienst : IDialogDienst
         var fenster = new DialogFenster(dialog) { Owner = Application.Current.MainWindow };
         return fenster.ShowDialog() == true;
     }
+
+    public void Hinweis(string meldung)
+    {
+        MessageBox.Show(Application.Current.MainWindow, meldung, "Geräteausleihe",
+            MessageBoxButton.OK, MessageBoxImage.Information);
+    }
 }

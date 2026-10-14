@@ -3,7 +3,7 @@ using Geraeteausleihe.Core.Domain;
 
 namespace Geraeteausleihe.Core.Dienste;
 
-public class GeraeteVerwaltung(IGeraeteRepository geraete)
+public class GeraeteVerwaltung(IGeraeteRepository geraete, IReservierungsRepository reservierungen)
 {
     public IReadOnlyList<Geraet> AlleLaden() => geraete.AlleLaden();
 
@@ -39,6 +39,12 @@ public class GeraeteVerwaltung(IGeraeteRepository geraete)
     // Geräte werden nie gelöscht, damit die Ausleihhistorie erhalten bleibt.
     public void Deaktivieren(Geraet geraet)
     {
+        if (reservierungen.GeraetHatOffene(geraet.Id))
+        {
+            throw new FachlicherFehler(
+                "Das Gerät hat noch offene Reservierungen. Bitte diese zuerst abschließen oder stornieren.");
+        }
+
         geraet.Aktiv = false;
         geraete.Aktualisieren(geraet);
     }

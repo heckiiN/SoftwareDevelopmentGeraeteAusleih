@@ -57,15 +57,22 @@ public partial class EntleiherViewModel : ObservableObject
     private void AktivUmschalten()
     {
         var person = AusgewaehlterEntleiher!;
-        if (person.Aktiv)
+        try
         {
-            _verwaltung.Deaktivieren(person);
+            if (person.Aktiv)
+            {
+                _verwaltung.Deaktivieren(person);
+            }
+            else
+            {
+                _verwaltung.Aktivieren(person);
+            }
+            Laden();
         }
-        else
+        catch (FachlicherFehler fehler)
         {
-            _verwaltung.Aktivieren(person);
+            _dialoge.Hinweis(fehler.Message);
         }
-        Laden();
     }
 
     private bool IstEntleiherAusgewaehlt() => AusgewaehlterEntleiher is not null;

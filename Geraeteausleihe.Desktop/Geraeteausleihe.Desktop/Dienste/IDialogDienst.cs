@@ -6,4 +6,5 @@ namespace Geraeteausleihe.Desktop.Dienste;
 public interface IDialogDienst
 {
     bool Zeigen(DialogViewModel dialog);
+    void Hinweis(string meldung);
 }

@@ -7,14 +7,30 @@ namespace Geraeteausleihe.Tests;
 public sealed class GeraeteVerwaltungTests : IDisposable
 {
     private readonly TestDatenbank _db = new();
+    private readonly SqliteReservierungsRepository _reservierungen;
     private readonly GeraeteVerwaltung _verwaltung;
 
     public GeraeteVerwaltungTests()
     {
-        _verwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(_db.Datenbank));
+        _reservierungen = new SqliteReservierungsRepository(_db.Datenbank);
+        _verwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(_db.Datenbank), _reservierungen);
     }
 
     public void Dispose() => _db.Dispose();
+
+    private void Reservieren(Geraet geraet, ReservierungsStatus status)
+    {
+        var max = new Entleiher { Name = "Max Mustermann" };
+        new SqliteEntleiherRepository(_db.Datenbank).Hinzufuegen(max);
+        _reservierungen.AnlegenWennFrei(new Reservierung
+        {
+            GeraetId = geraet.Id,
+            EntleiherId = max.Id,
+            Beginn = new DateTime(2026, 11, 1, 9, 0, 0),
+            Ende = new DateTime(2026, 11, 1, 12, 0, 0),
+            Status = status
+        });
+    }
 
     private static Geraet Beamer() => new()
     {
@@ -112,12 +128,41 @@ public sealed class GeraeteVerwaltungTests : IDisposable
         Assert.True(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
     }
 
+    [Theory]
+    [InlineData(ReservierungsStatus.Reserviert)]
+    [InlineData(ReservierungsStatus.Ausgegeben)]
+    public void Geraet_mit_offener_Reservierung_laesst_sich_nicht_deaktivieren(ReservierungsStatus status)
+    {
+        var geraet = Beamer();
+        _verwaltung.Speichern(geraet);
+        Reservieren(geraet, status);
+
+        Assert.Throws<FachlicherFehler>(() => _verwaltung.Deaktivieren(geraet));
+        Assert.True(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
+    }
+
+    [Theory]
+    [InlineData(ReservierungsStatus.Storniert)]
+    [InlineData(ReservierungsStatus.Zurueckgegeben)]
+    public void Geraet_mit_abgeschlossenen_Reservierungen_laesst_sich_deaktivieren(ReservierungsStatus status)
+    {
+        var geraet = Beamer();
+        _verwaltung.Speichern(geraet);
+        Reservieren(geraet, status);
+
+        _verwaltung.Deaktivieren(geraet);
+
+        Assert.False(Assert.Single(_verwaltung.AlleLaden()).Aktiv);
+    }
+
     [Fact]
     public void Geraete_bleiben_nach_erneutem_Oeffnen_der_Datenbank_erhalten()
     {
         _verwaltung.Speichern(Beamer());
 
-        var nachNeustart = new GeraeteVerwaltung(new SqliteGeraeteRepository(_db.NeuOeffnen()));
+        var datenbank = _db.NeuOeffnen();
+        var nachNeustart = new GeraeteVerwaltung(
+            new SqliteGeraeteRepository(datenbank), new SqliteReservierungsRepository(datenbank));
 
         Assert.Equal("G-001", Assert.Single(nachNeustart.AlleLaden()).Inventarnummer);
     }

@@ -3,7 +3,7 @@ using Geraeteausleihe.Core.Domain;
 
 namespace Geraeteausleihe.Core.Dienste;
 
-public class EntleiherVerwaltung(IEntleiherRepository entleiher)
+public class EntleiherVerwaltung(IEntleiherRepository entleiher, IReservierungsRepository reservierungen)
 {
     public IReadOnlyList<Entleiher> AlleLaden() => entleiher.AlleLaden();
 
@@ -29,6 +29,12 @@ public class EntleiherVerwaltung(IEntleiherRepository entleiher)
 
     public void Deaktivieren(Entleiher person)
     {
+        if (reservierungen.EntleiherHatOffene(person.Id))
+        {
+            throw new FachlicherFehler(
+                "Der Entleiher hat noch offene Reservierungen. Bitte diese zuerst abschließen oder stornieren.");
+        }
+
         person.Aktiv = false;
         entleiher.Aktualisieren(person);
     }

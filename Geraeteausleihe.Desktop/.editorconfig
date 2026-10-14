@@ -1,0 +1,15 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{xml,csproj,props,slnx,json}]
+indent_size = 2
+
+[*.cs]
+# Geschweifte Klammern auch bei einzeiligen if/else/Schleifen
+csharp_prefer_braces = true:warning
+dotnet_diagnostic.IDE0011.severity = warning

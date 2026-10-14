@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Regeln aus der .editorconfig auch beim Bauen prüfen, nicht nur in Visual Studio -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+</Project>

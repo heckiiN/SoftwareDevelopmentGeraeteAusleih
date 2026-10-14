@@ -10,6 +10,7 @@ public sealed class ReservierungsVerwaltungTests : IDisposable
     private readonly SqliteGeraeteRepository _geraete;
     private readonly SqliteEntleiherRepository _entleiher;
     private readonly ReservierungsVerwaltung _verwaltung;
+    private readonly FesteZeit _zeit = new(new DateTime(2026, 11, 1, 10, 0, 0));
     private readonly Geraet _beamer = new() { Inventarnummer = "G-001", Bezeichnung = "Beamer 01" };
     private readonly Entleiher _max = new() { Name = "Max Mustermann" };
 
@@ -17,7 +18,8 @@ public sealed class ReservierungsVerwaltungTests : IDisposable
     {
         _geraete = new SqliteGeraeteRepository(_db.Datenbank);
         _entleiher = new SqliteEntleiherRepository(_db.Datenbank);
-        _verwaltung = new ReservierungsVerwaltung(new SqliteReservierungsRepository(_db.Datenbank), _geraete, _entleiher);
+        _verwaltung = new ReservierungsVerwaltung(
+            new SqliteReservierungsRepository(_db.Datenbank), _geraete, _entleiher, _zeit);
 
         _geraete.Hinzufuegen(_beamer);
         _entleiher.Hinzufuegen(_max);
@@ -109,5 +111,37 @@ public sealed class ReservierungsVerwaltungTests : IDisposable
         var fehler = Assert.Throws<FachlicherFehler>(() => _verwaltung.Stornieren(reservierung.Id));
 
         Assert.Equal("Die Reservierung ist bereits storniert.", fehler.Message);
+    }
+
+    [Fact]
+    public void Ausgabe_und_Rueckgabe_speichern_Status_und_Zeitpunkt()
+    {
+        var reservierung = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));
+
+        _verwaltung.Ausgeben(reservierung.Id);
+        _zeit.Jetzt = Um(13);
+        _verwaltung.Zurueckgeben(reservierung.Id);
+
+        var gespeichert = Assert.Single(_verwaltung.AlleLaden());
+        Assert.Equal(ReservierungsStatus.Zurueckgegeben, gespeichert.Status);
+        Assert.Equal(Um(10), gespeichert.Ausgabezeitpunkt);
+        Assert.Equal(Um(13), gespeichert.Rueckgabezeitpunkt);
+    }
+
+    [Fact]
+    public void Noch_ausgegebenes_Geraet_blockiert_die_Folgeausgabe_mit_Grund()
+    {
+        var erste = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));
+        var folge = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(12), Um(15));
+        _verwaltung.Ausgeben(erste.Id);
+        _zeit.Jetzt = Um(13);
+
+        var fehler = Assert.Throws<FachlicherFehler>(() => _verwaltung.Ausgeben(folge.Id));
+
+        Assert.Equal("Das Gerät ist noch bei Max Mustermann (Rückgabe war bis 01.11.2026 12:00 geplant).", fehler.Message);
+
+        _verwaltung.Zurueckgeben(erste.Id);
+        _verwaltung.Ausgeben(folge.Id);
+        Assert.Equal(ReservierungsStatus.Ausgegeben, _verwaltung.AlleLaden().Single(r => r.Id == folge.Id).Status);
     }
 }

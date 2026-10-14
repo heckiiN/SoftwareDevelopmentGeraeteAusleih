@@ -37,7 +37,7 @@ public partial class App : Application
 
         var geraeteVerwaltung = new GeraeteVerwaltung(geraete, reservierungen);
         var entleiherVerwaltung = new EntleiherVerwaltung(entleiher, reservierungen);
-        var reservierungsVerwaltung = new ReservierungsVerwaltung(reservierungen, geraete, entleiher);
+        var reservierungsVerwaltung = new ReservierungsVerwaltung(reservierungen, geraete, entleiher, new Systemzeit());
 
         var dialoge = new DialogDienst();
 

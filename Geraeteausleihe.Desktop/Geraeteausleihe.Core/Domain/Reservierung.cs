@@ -34,4 +34,46 @@ public class Reservierung
                 throw new FachlicherFehler("Eine abgeschlossene Ausleihe kann nicht storniert werden.");
         }
     }
+
+    // Ausgabe nur innerhalb des gebuchten Zeitraums: frühestens zum Beginn, spätestens kurz vor dem Ende.
+    public void Ausgeben(DateTime jetzt)
+    {
+        switch (Status)
+        {
+            case ReservierungsStatus.Ausgegeben:
+                throw new FachlicherFehler("Das Gerät ist bereits ausgegeben.");
+            case ReservierungsStatus.Storniert:
+                throw new FachlicherFehler("Eine stornierte Reservierung kann nicht ausgegeben werden.");
+            case ReservierungsStatus.Zurueckgegeben:
+                throw new FachlicherFehler("Diese Ausleihe ist bereits abgeschlossen.");
+        }
+        if (jetzt < Beginn)
+        {
+            throw new FachlicherFehler($"Die Ausgabe ist erst ab {Beginn:dd.MM.yyyy HH:mm} möglich.");
+        }
+        if (jetzt >= Ende)
+        {
+            throw new FachlicherFehler("Der Reservierungszeitraum ist bereits abgelaufen.");
+        }
+
+        Status = ReservierungsStatus.Ausgegeben;
+        Ausgabezeitpunkt = jetzt;
+    }
+
+    // Die Rückgabe ist jederzeit möglich, auch verspätet.
+    public void Zurueckgeben(DateTime jetzt)
+    {
+        switch (Status)
+        {
+            case ReservierungsStatus.Reserviert:
+                throw new FachlicherFehler("Das Gerät wurde noch nicht ausgegeben.");
+            case ReservierungsStatus.Zurueckgegeben:
+                throw new FachlicherFehler("Das Gerät wurde bereits zurückgegeben.");
+            case ReservierungsStatus.Storniert:
+                throw new FachlicherFehler("Eine stornierte Reservierung kann nicht zurückgegeben werden.");
+        }
+
+        Status = ReservierungsStatus.Zurueckgegeben;
+        Rueckgabezeitpunkt = jetzt;
+    }
 }

@@ -21,7 +21,8 @@ public sealed class ReservierungDialogTests : IDisposable
         var reservierungsRepository = new SqliteReservierungsRepository(_db.Datenbank);
         var geraete = new GeraeteVerwaltung(geraeteRepository, reservierungsRepository);
         _entleiher = new EntleiherVerwaltung(entleiherRepository, reservierungsRepository);
-        _reservierungen = new ReservierungsVerwaltung(reservierungsRepository, geraeteRepository, entleiherRepository);
+        _reservierungen = new ReservierungsVerwaltung(
+            reservierungsRepository, geraeteRepository, entleiherRepository, new Systemzeit());
 
         geraete.Speichern(new Geraet { Inventarnummer = "G-002", Bezeichnung = "Leinwand 02" });
         _entleiher.Speichern(new Entleiher { Name = "Max Mustermann" });

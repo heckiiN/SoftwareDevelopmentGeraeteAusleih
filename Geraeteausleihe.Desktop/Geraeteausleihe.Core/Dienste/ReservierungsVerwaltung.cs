@@ -6,7 +6,8 @@ namespace Geraeteausleihe.Core.Dienste;
 public class ReservierungsVerwaltung(
     IReservierungsRepository reservierungen,
     IGeraeteRepository geraete,
-    IEntleiherRepository entleiher)
+    IEntleiherRepository entleiher,
+    IZeitquelle zeit)
 {
     public IReadOnlyList<Reservierung> AlleLaden() => reservierungen.AlleLaden();
 
@@ -44,16 +45,41 @@ public class ReservierungsVerwaltung(
 
     public void Stornieren(int reservierungId)
     {
-        // Frisch aus der Datenbank, damit der Statuswechsel vom gespeicherten Stand ausgeht
-        var reservierung = reservierungen.Laden(reservierungId)
-            ?? throw new FachlicherFehler("Die Reservierung wurde nicht gefunden.");
-
+        var reservierung = FrischLaden(reservierungId);
         reservierung.Stornieren();
+        reservierungen.StatusSpeichern(reservierung);
+    }
+
+    public void Ausgeben(int reservierungId)
+    {
+        var reservierung = FrischLaden(reservierungId);
+
+        var nochAusgegeben = Verfuegbarkeit.FindeNochAusgegebene(
+            reservierungen.BlockierendeLaden(reservierung.GeraetId), reservierung);
+        if (nochAusgegeben is not null)
+        {
+            var name = entleiher.Laden(nochAusgegeben.EntleiherId)?.Name;
+            throw new FachlicherFehler(
+                $"Das Gerät ist noch bei {name} (Rückgabe war bis {nochAusgegeben.Ende:dd.MM.yyyy HH:mm} geplant).");
+        }
+
+        reservierung.Ausgeben(zeit.Jetzt);
+        reservierungen.StatusSpeichern(reservierung);
+    }
+
+    public void Zurueckgeben(int reservierungId)
+    {
+        var reservierung = FrischLaden(reservierungId);
+        reservierung.Zurueckgeben(zeit.Jetzt);
         reservierungen.StatusSpeichern(reservierung);
     }
 
     public static string BelegtMeldung(Reservierung konflikt) =>
         $"Das Gerät ist von {konflikt.Beginn:dd.MM.yyyy HH:mm} bis {konflikt.Ende:dd.MM.yyyy HH:mm} bereits reserviert.";
+
+    // Statuswechsel gehen immer vom gespeicherten Stand aus, nicht von einer veralteten Zeile in der Liste.
+    private Reservierung FrischLaden(int reservierungId) =>
+        reservierungen.Laden(reservierungId) ?? throw new FachlicherFehler("Die Reservierung wurde nicht gefunden.");
 
     private static void ZeitraumPruefen(DateTime beginn, DateTime ende)
     {

@@ -24,6 +24,21 @@ public class SqliteEntleiherRepository(Datenbank datenbank) : IEntleiherReposito
         return entleiher;
     }
 
+    public Entleiher? Laden(int id)
+    {
+        using var verbindung = datenbank.Oeffnen();
+        using var befehl = verbindung.CreateCommand();
+        befehl.CommandText = """
+            SELECT Id, Name, Kontakt, Aktiv
+            FROM Entleiher
+            WHERE Id = $id
+            """;
+        befehl.Parameters.AddWithValue("$id", id);
+
+        using var leser = befehl.ExecuteReader();
+        return leser.Read() ? Lesen(leser) : null;
+    }
+
     public void Hinzufuegen(Entleiher entleiher)
     {
         using var verbindung = datenbank.Oeffnen();

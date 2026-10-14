@@ -9,12 +9,14 @@
                     <TextBlock Text="Neue Reservierung" />
                 </StackPanel>
             </Button>
+            <Button DockPanel.Dock="Right" Content="Stornieren" Command="{Binding StornierenCommand}"
+                    Style="{StaticResource SekundaerButton}" Margin="0,0,8,0" />
             <TextBox Text="{Binding Suchtext, UpdateSourceTrigger=PropertyChanged}" Tag="Reservierungen filtern..."
                      Style="{StaticResource Suchfeld}" Width="280" HorizontalAlignment="Left" />
         </DockPanel>
 
         <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
-            <DataGrid ItemsSource="{Binding Zeilen}">
+            <DataGrid ItemsSource="{Binding Zeilen}" SelectedItem="{Binding AusgewaehlteZeile}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Gerät" Binding="{Binding Geraet}" Width="*"
                                         ElementStyle="{StaticResource Hervorgehoben}" />

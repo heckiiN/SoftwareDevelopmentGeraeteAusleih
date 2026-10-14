@@ -7,4 +7,5 @@ public interface IDialogDienst
 {
     bool Zeigen(DialogViewModel dialog);
     void Hinweis(string meldung);
+    bool Bestaetigen(string frage);
 }

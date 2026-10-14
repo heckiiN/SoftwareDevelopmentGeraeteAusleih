@@ -1,6 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Geraeteausleihe.Core.Dienste;
+using Geraeteausleihe.Core.Domain;
 using Geraeteausleihe.Desktop.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
@@ -28,6 +29,10 @@ public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
     [NotifyPropertyChangedFor(nameof(Zeilen))]
     public partial string Suchtext { get; set; }
 
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(StornierenCommand))]
+    public partial ReservierungsZeile? AusgewaehlteZeile { get; set; }
+
     public IReadOnlyList<ReservierungsZeile> Zeilen => _alleZeilen
         .Where(z => Passt(z.Geraet) || Passt(z.Entleiher))
         .ToList();
@@ -40,6 +45,31 @@ public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
             Aktualisieren();
         }
     }
+
+    [RelayCommand(CanExecute = nameof(IstStornierbar))]
+    private void Stornieren()
+    {
+        var zeile = AusgewaehlteZeile!;
+        var reservierung = zeile.Reservierung;
+        var frage = $"Reservierung von {zeile.Geraet} für {zeile.Entleiher} " +
+            $"({reservierung.Beginn:dd.MM.yyyy, HH:mm} bis {reservierung.Ende:dd.MM.yyyy, HH:mm}) stornieren?";
+        if (!_dialoge.Bestaetigen(frage))
+        {
+            return;
+        }
+
+        try
+        {
+            _reservierungen.Stornieren(reservierung.Id);
+        }
+        catch (FachlicherFehler fehler)
+        {
+            _dialoge.Hinweis(fehler.Message);
+        }
+        Aktualisieren();
+    }
+
+    private bool IstStornierbar() => AusgewaehlteZeile?.Reservierung.Status == ReservierungsStatus.Reserviert;
 
     public void Aktualisieren()
     {

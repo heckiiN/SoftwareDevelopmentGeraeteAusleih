@@ -8,9 +8,13 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styles/Farben.xaml" />
                 <ResourceDictionary Source="Styles/Steuerelemente.xaml" />
+                <ResourceDictionary Source="Styles/Tabelle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!-- Zu jedem Seiten-ViewModel die passende View -->
+            <DataTemplate DataType="{x:Type vm:GeraeteViewModel}">
+                <views:GeraeteView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
                 <views:PlatzhalterView />
             </DataTemplate>

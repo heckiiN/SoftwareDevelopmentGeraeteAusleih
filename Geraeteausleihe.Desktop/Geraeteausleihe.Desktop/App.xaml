@@ -29,6 +29,9 @@
             <DataTemplate DataType="{x:Type vm:EntleiherDialogViewModel}">
                 <views:EntleiherDialogView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ReservierungDialogViewModel}">
+                <views:ReservierungDialogView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
                 <views:PlatzhalterView />
             </DataTemplate>

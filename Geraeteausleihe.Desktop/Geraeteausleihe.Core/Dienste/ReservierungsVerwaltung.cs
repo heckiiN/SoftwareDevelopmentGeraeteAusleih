@@ -36,12 +36,14 @@ public class ReservierungsVerwaltung(
         var konflikt = reservierungen.AnlegenWennFrei(neu);
         if (konflikt is not null)
         {
-            throw new FachlicherFehler(
-                $"Das Gerät ist von {konflikt.Beginn:dd.MM.yyyy HH:mm} bis {konflikt.Ende:dd.MM.yyyy HH:mm} bereits reserviert.");
+            throw new FachlicherFehler(BelegtMeldung(konflikt));
         }
 
         return neu;
     }
+
+    public static string BelegtMeldung(Reservierung konflikt) =>
+        $"Das Gerät ist von {konflikt.Beginn:dd.MM.yyyy HH:mm} bis {konflikt.Ende:dd.MM.yyyy HH:mm} bereits reserviert.";
 
     private static void ZeitraumPruefen(DateTime beginn, DateTime ende)
     {

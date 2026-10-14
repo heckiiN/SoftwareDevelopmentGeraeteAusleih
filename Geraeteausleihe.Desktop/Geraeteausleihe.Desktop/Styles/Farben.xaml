@@ -16,6 +16,7 @@
     <SolidColorBrush x:Key="Erfolg" Color="#22C55E" />
     <SolidColorBrush x:Key="ErfolgDunkel" Color="#16A34A" />
     <SolidColorBrush x:Key="ErfolgHell" Color="#DCFCE7" />
+    <SolidColorBrush x:Key="ErfolgRahmen" Color="#BBF7D0" />
     <SolidColorBrush x:Key="Warnung" Color="#F59E0B" />
     <SolidColorBrush x:Key="WarnungDunkel" Color="#B45309" />
     <SolidColorBrush x:Key="WarnungHell" Color="#FEF3C7" />

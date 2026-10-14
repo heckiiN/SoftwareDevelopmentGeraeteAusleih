@@ -1,5 +1,7 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Geraeteausleihe.Core.Dienste;
+using Geraeteausleihe.Desktop.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
@@ -8,14 +10,17 @@ public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
     private readonly ReservierungsVerwaltung _reservierungen;
     private readonly GeraeteVerwaltung _geraete;
     private readonly EntleiherVerwaltung _entleiher;
+    private readonly IDialogDienst _dialoge;
     private IReadOnlyList<ReservierungsZeile> _alleZeilen = [];
 
     public ReservierungenViewModel(
-        ReservierungsVerwaltung reservierungen, GeraeteVerwaltung geraete, EntleiherVerwaltung entleiher)
+        ReservierungsVerwaltung reservierungen, GeraeteVerwaltung geraete, EntleiherVerwaltung entleiher,
+        IDialogDienst dialoge)
     {
         _reservierungen = reservierungen;
         _geraete = geraete;
         _entleiher = entleiher;
+        _dialoge = dialoge;
         Suchtext = "";
     }
 
@@ -26,6 +31,15 @@ public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
     public IReadOnlyList<ReservierungsZeile> Zeilen => _alleZeilen
         .Where(z => Passt(z.Geraet) || Passt(z.Entleiher))
         .ToList();
+
+    [RelayCommand]
+    private void NeueReservierung()
+    {
+        if (_dialoge.Zeigen(new ReservierungDialogViewModel(_reservierungen, _geraete, _entleiher)))
+        {
+            Aktualisieren();
+        }
+    }
 
     public void Aktualisieren()
     {

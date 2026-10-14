@@ -18,7 +18,9 @@ public class SqliteEntleiherRepository(Datenbank datenbank) : IEntleiherReposito
         using var leser = befehl.ExecuteReader();
         var entleiher = new List<Entleiher>();
         while (leser.Read())
+        {
             entleiher.Add(Lesen(leser));
+        }
         return entleiher;
     }
 

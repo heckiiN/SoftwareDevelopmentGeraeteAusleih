@@ -13,12 +13,18 @@ public class EntleiherVerwaltung(IEntleiherRepository entleiher)
         person.Kontakt = string.IsNullOrWhiteSpace(person.Kontakt) ? null : person.Kontakt.Trim();
 
         if (person.Name.Length == 0)
+        {
             throw new FachlicherFehler("Bitte einen Namen eingeben.");
+        }
 
         if (person.Id == 0)
+        {
             entleiher.Hinzufuegen(person);
+        }
         else
+        {
             entleiher.Aktualisieren(person);
+        }
     }
 
     public void Deaktivieren(Entleiher person)

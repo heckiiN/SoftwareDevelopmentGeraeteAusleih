@@ -18,7 +18,9 @@ public class SqliteGeraeteRepository(Datenbank datenbank) : IGeraeteRepository
         using var leser = befehl.ExecuteReader();
         var geraete = new List<Geraet>();
         while (leser.Read())
+        {
             geraete.Add(Lesen(leser));
+        }
         return geraete;
     }
 

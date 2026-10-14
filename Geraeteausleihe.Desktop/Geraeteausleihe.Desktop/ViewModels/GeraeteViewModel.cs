@@ -45,14 +45,18 @@ public partial class GeraeteViewModel : ObservableObject
     private void NeuesGeraet()
     {
         if (_dialoge.Zeigen(new GeraetDialogViewModel(_verwaltung)))
+        {
             Laden();
+        }
     }
 
     [RelayCommand]
     private void Bearbeiten(Geraet geraet)
     {
         if (_dialoge.Zeigen(new GeraetDialogViewModel(_verwaltung, geraet)))
+        {
             Laden();
+        }
     }
 
     [RelayCommand(CanExecute = nameof(IstGeraetAusgewaehlt))]

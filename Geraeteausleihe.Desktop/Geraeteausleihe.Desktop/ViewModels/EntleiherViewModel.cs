@@ -32,14 +32,18 @@ public partial class EntleiherViewModel : ObservableObject
     private void NeuerEntleiher()
     {
         if (_dialoge.Zeigen(new EntleiherDialogViewModel(_verwaltung)))
+        {
             Laden();
+        }
     }
 
     [RelayCommand]
     private void Bearbeiten(Entleiher person)
     {
         if (_dialoge.Zeigen(new EntleiherDialogViewModel(_verwaltung, person)))
+        {
             Laden();
+        }
     }
 
     private void Laden()

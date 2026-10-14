@@ -6,7 +6,7 @@ using Geraeteausleihe.Desktop.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
-public partial class GeraeteViewModel : ObservableObject
+public partial class GeraeteViewModel : ObservableObject, IAktualisierbar
 {
     private readonly GeraeteVerwaltung _verwaltung;
     private readonly IDialogDienst _dialoge;
@@ -18,7 +18,6 @@ public partial class GeraeteViewModel : ObservableObject
         _dialoge = dialoge;
         Suchtext = "";
         NurAktive = true;
-        Laden();
     }
 
     [ObservableProperty]
@@ -46,7 +45,7 @@ public partial class GeraeteViewModel : ObservableObject
     {
         if (_dialoge.Zeigen(new GeraetDialogViewModel(_verwaltung)))
         {
-            Laden();
+            Aktualisieren();
         }
     }
 
@@ -55,7 +54,7 @@ public partial class GeraeteViewModel : ObservableObject
     {
         if (_dialoge.Zeigen(new GeraetDialogViewModel(_verwaltung, geraet)))
         {
-            Laden();
+            Aktualisieren();
         }
     }
 
@@ -73,7 +72,7 @@ public partial class GeraeteViewModel : ObservableObject
             {
                 _verwaltung.Aktivieren(geraet);
             }
-            Laden();
+            Aktualisieren();
         }
         catch (FachlicherFehler fehler)
         {
@@ -83,7 +82,7 @@ public partial class GeraeteViewModel : ObservableObject
 
     private bool IstGeraetAusgewaehlt() => AusgewaehltesGeraet is not null;
 
-    private void Laden()
+    public void Aktualisieren()
     {
         _alleGeraete = _verwaltung.AlleLaden();
         OnPropertyChanged(nameof(Geraete));

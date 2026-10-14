@@ -25,4 +25,12 @@ public partial class HauptViewModel : ObservableObject
 
     [ObservableProperty]
     public partial Navigationspunkt AktuellerPunkt { get; set; }
+
+    partial void OnAktuellerPunktChanged(Navigationspunkt value)
+    {
+        if (value.Seite is IAktualisierbar seite)
+        {
+            seite.Aktualisieren();
+        }
+    }
 }

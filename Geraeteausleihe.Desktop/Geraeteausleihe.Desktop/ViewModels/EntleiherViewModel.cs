@@ -6,7 +6,7 @@ using Geraeteausleihe.Desktop.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
-public partial class EntleiherViewModel : ObservableObject
+public partial class EntleiherViewModel : ObservableObject, IAktualisierbar
 {
     private readonly EntleiherVerwaltung _verwaltung;
     private readonly IDialogDienst _dialoge;
@@ -17,7 +17,6 @@ public partial class EntleiherViewModel : ObservableObject
         _verwaltung = verwaltung;
         _dialoge = dialoge;
         Suchtext = "";
-        Laden();
     }
 
     [ObservableProperty]
@@ -40,7 +39,7 @@ public partial class EntleiherViewModel : ObservableObject
     {
         if (_dialoge.Zeigen(new EntleiherDialogViewModel(_verwaltung)))
         {
-            Laden();
+            Aktualisieren();
         }
     }
 
@@ -49,7 +48,7 @@ public partial class EntleiherViewModel : ObservableObject
     {
         if (_dialoge.Zeigen(new EntleiherDialogViewModel(_verwaltung, person)))
         {
-            Laden();
+            Aktualisieren();
         }
     }
 
@@ -67,7 +66,7 @@ public partial class EntleiherViewModel : ObservableObject
             {
                 _verwaltung.Aktivieren(person);
             }
-            Laden();
+            Aktualisieren();
         }
         catch (FachlicherFehler fehler)
         {
@@ -77,7 +76,7 @@ public partial class EntleiherViewModel : ObservableObject
 
     private bool IstEntleiherAusgewaehlt() => AusgewaehlterEntleiher is not null;
 
-    private void Laden()
+    public void Aktualisieren()
     {
         _alleEntleiher = _verwaltung.AlleLaden();
         OnPropertyChanged(nameof(Entleiher));

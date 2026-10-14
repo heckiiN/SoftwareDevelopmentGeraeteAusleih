@@ -3,7 +3,7 @@ using Geraeteausleihe.Core.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
-public partial class ReservierungenViewModel : ObservableObject
+public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
 {
     private readonly ReservierungsVerwaltung _reservierungen;
     private readonly GeraeteVerwaltung _geraete;
@@ -17,7 +17,6 @@ public partial class ReservierungenViewModel : ObservableObject
         _geraete = geraete;
         _entleiher = entleiher;
         Suchtext = "";
-        Laden();
     }
 
     [ObservableProperty]
@@ -28,7 +27,7 @@ public partial class ReservierungenViewModel : ObservableObject
         .Where(z => Passt(z.Geraet) || Passt(z.Entleiher))
         .ToList();
 
-    private void Laden()
+    public void Aktualisieren()
     {
         var geraete = _geraete.AlleLaden().ToDictionary(g => g.Id, g => g.Bezeichnung);
         var entleiher = _entleiher.AlleLaden().ToDictionary(e => e.Id, e => e.Name);

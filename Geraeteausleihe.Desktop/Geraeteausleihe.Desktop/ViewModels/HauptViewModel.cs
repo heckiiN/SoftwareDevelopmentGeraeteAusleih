@@ -8,11 +8,15 @@ public partial class HauptViewModel : ObservableObject
     {
         Navigation =
         [
-            new("Übersicht", "", new PlatzhalterViewModel("Übersicht")),
-            new("Geräte", "", geraete),
-            new("Entleiher", "", entleiher),
-            new("Reservierungen", "", reservierungen),
-            new("Ausgabe & Rückgabe", "", new PlatzhalterViewModel("Ausgabe & Rückgabe"))
+            new("Übersicht", "", "Geräteausleihe", "Vereinsinterne Geräteverwaltung",
+                new PlatzhalterViewModel("Übersicht")),
+            new("Geräte", "", "Geräteausleihe", "Vereinsinterne Geräteverwaltung", geraete),
+            new("Entleiher", "", "Entleiherverwaltung", "Übersicht aller eingetragenen Vereinsmitglieder",
+                entleiher),
+            new("Reservierungen", "", "Reservierungsübersicht",
+                "Übersicht aller anstehenden und laufenden Reservierungen", reservierungen),
+            new("Ausgabe & Rückgabe", "", "Ausgabe & Rückgabe",
+                "Geräte an Entleiher übergeben oder zurücknehmen", new PlatzhalterViewModel("Ausgabe & Rückgabe"))
         ];
         AktuellerPunkt = Navigation[0];
     }

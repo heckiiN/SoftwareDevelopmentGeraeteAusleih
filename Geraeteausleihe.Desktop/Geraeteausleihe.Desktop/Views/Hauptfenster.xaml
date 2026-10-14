@@ -55,8 +55,8 @@
                         <TextBlock Text="Lokaler Arbeitsplatz" FontSize="12" />
                     </StackPanel>
                     <StackPanel>
-                        <TextBlock Text="Geräteausleihe" Style="{StaticResource Titel}" />
-                        <TextBlock Text="Vereinsinterne Geräteverwaltung" Style="{StaticResource Hinweis}" />
+                        <TextBlock Text="{Binding AktuellerPunkt.Ueberschrift}" Style="{StaticResource Titel}" />
+                        <TextBlock Text="{Binding AktuellerPunkt.Untertitel}" Style="{StaticResource Hinweis}" />
                     </StackPanel>
                 </DockPanel>
             </Border>

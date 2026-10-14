@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock Text="{Binding Titel}" FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" />
-        <TextBlock Text="Diese Seite folgt noch." Margin="0,6,0,0" Foreground="Gray" HorizontalAlignment="Center" />
+        <TextBlock Text="{Binding Titel}" Style="{StaticResource Titel}" HorizontalAlignment="Center" />
+        <TextBlock Text="Diese Seite folgt noch." Style="{StaticResource Hinweis}" FontSize="13" Margin="0,6,0,0"
+                   HorizontalAlignment="Center" />
     </StackPanel>
 </UserControl>

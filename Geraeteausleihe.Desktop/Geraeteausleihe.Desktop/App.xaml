@@ -4,9 +4,16 @@
              xmlns:vm="clr-namespace:Geraeteausleihe.Desktop.ViewModels"
              xmlns:views="clr-namespace:Geraeteausleihe.Desktop.Views">
     <Application.Resources>
-        <!-- Zu jedem Seiten-ViewModel die passende View -->
-        <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
-            <views:PlatzhalterView />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Farben.xaml" />
+                <ResourceDictionary Source="Styles/Steuerelemente.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Zu jedem Seiten-ViewModel die passende View -->
+            <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
+                <views:PlatzhalterView />
+            </DataTemplate>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

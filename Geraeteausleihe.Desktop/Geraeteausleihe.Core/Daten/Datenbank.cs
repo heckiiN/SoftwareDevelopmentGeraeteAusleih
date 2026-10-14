@@ -34,6 +34,13 @@ public class Datenbank
                 Beschreibung   TEXT,
                 Aktiv          INTEGER NOT NULL DEFAULT 1
             );
+
+            CREATE TABLE IF NOT EXISTS Entleiher (
+                Id      INTEGER PRIMARY KEY,
+                Name    TEXT NOT NULL,
+                Kontakt TEXT,
+                Aktiv   INTEGER NOT NULL DEFAULT 1
+            );
             """;
         befehl.ExecuteNonQuery();
     }

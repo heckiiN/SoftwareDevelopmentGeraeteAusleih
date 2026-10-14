@@ -2,6 +2,7 @@ using System.IO;
 using System.Windows;
 using Geraeteausleihe.Core.Daten;
 using Geraeteausleihe.Core.Dienste;
+using Geraeteausleihe.Desktop.Dienste;
 using Geraeteausleihe.Desktop.ViewModels;
 using Geraeteausleihe.Desktop.Views;
 using Microsoft.Data.Sqlite;
@@ -32,7 +33,9 @@ public partial class App : Application
 
         var geraeteVerwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(datenbank));
 
-        var hauptViewModel = new HauptViewModel(new GeraeteViewModel(geraeteVerwaltung));
+        var dialoge = new DialogDienst();
+
+        var hauptViewModel = new HauptViewModel(new GeraeteViewModel(geraeteVerwaltung, dialoge));
         new Hauptfenster { DataContext = hauptViewModel }.Show();
     }
 }

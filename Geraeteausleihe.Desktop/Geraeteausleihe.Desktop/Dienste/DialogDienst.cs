@@ -1,0 +1,14 @@
+using System.Windows;
+using Geraeteausleihe.Desktop.ViewModels;
+using Geraeteausleihe.Desktop.Views;
+
+namespace Geraeteausleihe.Desktop.Dienste;
+
+public class DialogDienst : IDialogDienst
+{
+    public bool Zeigen(DialogViewModel dialog)
+    {
+        var fenster = new DialogFenster(dialog) { Owner = Application.Current.MainWindow };
+        return fenster.ShowDialog() == true;
+    }
+}

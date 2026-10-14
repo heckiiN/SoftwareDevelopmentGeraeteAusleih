@@ -1,0 +1,48 @@
+<Window x:Class="Geraeteausleihe.Desktop.Views.Hauptfenster"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Geräteausleihe" Width="1200" Height="760" MinWidth="1000" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0" Margin="12">
+            <TextBlock Text="Verein e.V." FontSize="16" FontWeight="SemiBold" />
+            <TextBlock Text="GERÄTEVERWALTUNG" FontSize="10" Margin="0,2,0,24" />
+
+            <ListBox ItemsSource="{Binding Navigation}" SelectedItem="{Binding AktuellerPunkt}" BorderThickness="0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="4,6">
+                            <TextBlock Text="{Binding Symbol}" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Width="24" />
+                            <TextBlock Text="{Binding Titel}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <TextBlock Text="System-Status: Bereit" FontSize="11" Margin="0,24,0,0" />
+            <TextBlock Text="Lokale Geräteverwaltung" FontSize="10" />
+        </StackPanel>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <DockPanel Grid.Row="0" Margin="20,16">
+                <TextBlock DockPanel.Dock="Right" Text="Lokaler Arbeitsplatz" VerticalAlignment="Center" />
+                <StackPanel>
+                    <TextBlock Text="Geräteausleihe" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Text="Vereinsinterne Geräteverwaltung" FontSize="11" />
+                </StackPanel>
+            </DockPanel>
+
+            <ContentControl Grid.Row="1" Content="{Binding AktuellerPunkt.Seite}" Margin="20" />
+        </Grid>
+    </Grid>
+</Window>

@@ -1,9 +1,12 @@
-﻿<Application x:Class="Geraeteausleihe.Desktop.App"
+<Application x:Class="Geraeteausleihe.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Geraeteausleihe.Desktop"
-             StartupUri="MainWindow.xaml">
+             xmlns:vm="clr-namespace:Geraeteausleihe.Desktop.ViewModels"
+             xmlns:views="clr-namespace:Geraeteausleihe.Desktop.Views">
     <Application.Resources>
-         
+        <!-- Zu jedem Seiten-ViewModel die passende View -->
+        <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
+            <views:PlatzhalterView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

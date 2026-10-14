@@ -86,4 +86,28 @@ public sealed class ReservierungsVerwaltungTests : IDisposable
         Assert.NotNull(_verwaltung.VerfuegbarkeitPruefen(_beamer.Id, Um(10), Um(11)));
         Assert.Null(_verwaltung.VerfuegbarkeitPruefen(_beamer.Id, Um(12), Um(13)));
     }
+
+    [Fact]
+    public void Stornierte_Reservierung_bleibt_sichtbar_und_gibt_den_Zeitraum_frei()
+    {
+        var alt = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));
+
+        _verwaltung.Stornieren(alt.Id);
+        _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));
+
+        var alle = _verwaltung.AlleLaden();
+        Assert.Equal(2, alle.Count);
+        Assert.Equal(ReservierungsStatus.Storniert, alle.Single(r => r.Id == alt.Id).Status);
+    }
+
+    [Fact]
+    public void Doppeltes_Stornieren_wird_abgelehnt()
+    {
+        var reservierung = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));
+        _verwaltung.Stornieren(reservierung.Id);
+
+        var fehler = Assert.Throws<FachlicherFehler>(() => _verwaltung.Stornieren(reservierung.Id));
+
+        Assert.Equal("Die Reservierung ist bereits storniert.", fehler.Message);
+    }
 }

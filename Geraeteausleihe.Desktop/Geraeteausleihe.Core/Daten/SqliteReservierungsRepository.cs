@@ -17,6 +17,15 @@ public class SqliteReservierungsRepository(Datenbank datenbank) : IReservierungs
         return Lesen(befehl);
     }
 
+    public Reservierung? Laden(int id)
+    {
+        using var verbindung = datenbank.Oeffnen();
+        using var befehl = verbindung.CreateCommand();
+        befehl.CommandText = $"SELECT {Spalten} FROM Reservierung WHERE Id = $id";
+        befehl.Parameters.AddWithValue("$id", id);
+        return Lesen(befehl).SingleOrDefault();
+    }
+
     public IReadOnlyList<Reservierung> BlockierendeLaden(int geraetId)
     {
         using var verbindung = datenbank.Oeffnen();
@@ -67,6 +76,22 @@ public class SqliteReservierungsRepository(Datenbank datenbank) : IReservierungs
         neu.Id = Convert.ToInt32(befehl.ExecuteScalar());
         transaktion.Commit();
         return null;
+    }
+
+    public void StatusSpeichern(Reservierung reservierung)
+    {
+        using var verbindung = datenbank.Oeffnen();
+        using var befehl = verbindung.CreateCommand();
+        befehl.CommandText = """
+            UPDATE Reservierung
+            SET Status = $status, Ausgabezeitpunkt = $ausgabe, Rueckgabezeitpunkt = $rueckgabe
+            WHERE Id = $id
+            """;
+        befehl.Parameters.AddWithValue("$id", reservierung.Id);
+        befehl.Parameters.AddWithValue("$status", reservierung.Status.ToString());
+        befehl.Parameters.AddWithValue("$ausgabe", (object?)AlsText(reservierung.Ausgabezeitpunkt) ?? DBNull.Value);
+        befehl.Parameters.AddWithValue("$rueckgabe", (object?)AlsText(reservierung.Rueckgabezeitpunkt) ?? DBNull.Value);
+        befehl.ExecuteNonQuery();
     }
 
     private bool Existiert(string sql, int id)

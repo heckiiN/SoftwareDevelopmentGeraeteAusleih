@@ -42,6 +42,16 @@ public class ReservierungsVerwaltung(
         return neu;
     }
 
+    public void Stornieren(int reservierungId)
+    {
+        // Frisch aus der Datenbank, damit der Statuswechsel vom gespeicherten Stand ausgeht
+        var reservierung = reservierungen.Laden(reservierungId)
+            ?? throw new FachlicherFehler("Die Reservierung wurde nicht gefunden.");
+
+        reservierung.Stornieren();
+        reservierungen.StatusSpeichern(reservierung);
+    }
+
     public static string BelegtMeldung(Reservierung konflikt) =>
         $"Das Gerät ist von {konflikt.Beginn:dd.MM.yyyy HH:mm} bis {konflikt.Ende:dd.MM.yyyy HH:mm} bereits reserviert.";
 

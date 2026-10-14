@@ -9,6 +9,8 @@
                     <TextBlock Text="Neues Gerät" />
                 </StackPanel>
             </Button>
+            <Button DockPanel.Dock="Right" Content="{Binding UmschaltenText}" Command="{Binding AktivUmschaltenCommand}"
+                    Style="{StaticResource SekundaerButton}" Margin="0,0,8,0" />
             <StackPanel Orientation="Horizontal">
                 <TextBox Text="{Binding Suchtext, UpdateSourceTrigger=PropertyChanged}" Tag="Geräte suchen..."
                          Style="{StaticResource Suchfeld}" Width="280" />
@@ -19,7 +21,7 @@
 
         <!-- Oben ausgerichtet: die Karte wächst mit den Zeilen und scrollt erst, wenn der Platz nicht reicht -->
         <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
-            <DataGrid ItemsSource="{Binding Geraete}">
+            <DataGrid ItemsSource="{Binding Geraete}" SelectedItem="{Binding AusgewaehltesGeraet}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Inventarnummer" Binding="{Binding Inventarnummer}" Width="140"
                                         ElementStyle="{StaticResource Hervorgehoben}" />

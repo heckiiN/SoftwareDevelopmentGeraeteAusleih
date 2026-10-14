@@ -29,6 +29,13 @@ public partial class GeraeteViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(Geraete))]
     public partial bool NurAktive { get; set; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UmschaltenText))]
+    [NotifyCanExecuteChangedFor(nameof(AktivUmschaltenCommand))]
+    public partial Geraet? AusgewaehltesGeraet { get; set; }
+
+    public string UmschaltenText => AusgewaehltesGeraet is { Aktiv: false } ? "Aktivieren" : "Deaktivieren";
+
     public IReadOnlyList<Geraet> Geraete => _alleGeraete
         .Where(g => !NurAktive || g.Aktiv)
         .Where(g => Passt(g.Inventarnummer) || Passt(g.Bezeichnung) || Passt(g.Beschreibung))
@@ -47,6 +54,19 @@ public partial class GeraeteViewModel : ObservableObject
         if (_dialoge.Zeigen(new GeraetDialogViewModel(_verwaltung, geraet)))
             Laden();
     }
+
+    [RelayCommand(CanExecute = nameof(IstGeraetAusgewaehlt))]
+    private void AktivUmschalten()
+    {
+        var geraet = AusgewaehltesGeraet!;
+        if (geraet.Aktiv)
+            _verwaltung.Deaktivieren(geraet);
+        else
+            _verwaltung.Aktivieren(geraet);
+        Laden();
+    }
+
+    private bool IstGeraetAusgewaehlt() => AusgewaehltesGeraet is not null;
 
     private void Laden()
     {

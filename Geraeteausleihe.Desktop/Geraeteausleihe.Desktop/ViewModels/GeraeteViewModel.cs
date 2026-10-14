@@ -41,6 +41,13 @@ public partial class GeraeteViewModel : ObservableObject
             Laden();
     }
 
+    [RelayCommand]
+    private void Bearbeiten(Geraet geraet)
+    {
+        if (_dialoge.Zeigen(new GeraetDialogViewModel(_verwaltung, geraet)))
+            Laden();
+    }
+
     private void Laden()
     {
         _alleGeraete = _verwaltung.AlleLaden();

@@ -27,6 +27,17 @@
                                         ElementStyle="{StaticResource Hervorgehoben}" />
                     <DataGridTextColumn Header="Beschreibung" Binding="{Binding Beschreibung}" Width="*" />
                     <DataGridTemplateColumn Header="Aktiv" Width="90" CellTemplate="{StaticResource AktivSpalte}" />
+                    <DataGridTemplateColumn Header="Bearbeiten" Width="100" HeaderStyle="{StaticResource KopfRechts}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="&#xE70F;" Style="{StaticResource SymbolButton}"
+                                        BorderBrush="{StaticResource Rahmen}" HorizontalAlignment="Right"
+                                        AutomationProperties.Name="Bearbeiten" ToolTip="Bearbeiten"
+                                        Command="{Binding DataContext.BearbeitenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                        CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>

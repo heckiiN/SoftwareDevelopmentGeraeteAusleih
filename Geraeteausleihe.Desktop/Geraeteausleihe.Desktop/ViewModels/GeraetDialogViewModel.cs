@@ -8,16 +8,19 @@ namespace Geraeteausleihe.Desktop.ViewModels;
 public partial class GeraetDialogViewModel : DialogViewModel
 {
     private readonly GeraeteVerwaltung _verwaltung;
+    private readonly Geraet? _vorhandenes;
 
-    public GeraetDialogViewModel(GeraeteVerwaltung verwaltung)
+    // Ohne Gerät legt der Dialog ein neues an, sonst bearbeitet er das übergebene.
+    public GeraetDialogViewModel(GeraeteVerwaltung verwaltung, Geraet? vorhandenes = null)
     {
         _verwaltung = verwaltung;
-        Inventarnummer = "";
-        Bezeichnung = "";
-        Beschreibung = "";
+        _vorhandenes = vorhandenes;
+        Inventarnummer = vorhandenes?.Inventarnummer ?? "";
+        Bezeichnung = vorhandenes?.Bezeichnung ?? "";
+        Beschreibung = vorhandenes?.Beschreibung ?? "";
     }
 
-    public override string Titel => "Neues Gerät";
+    public override string Titel => _vorhandenes is null ? "Neues Gerät" : "Gerät bearbeiten";
 
     [ObservableProperty]
     public partial string Inventarnummer { get; set; }
@@ -37,8 +40,11 @@ public partial class GeraetDialogViewModel : DialogViewModel
     [RelayCommand]
     private void Speichern()
     {
+        // Neues Objekt, damit die Liste bei einem Fehler nicht schon geänderte Werte zeigt
         var geraet = new Geraet
         {
+            Id = _vorhandenes?.Id ?? 0,
+            Aktiv = _vorhandenes?.Aktiv ?? true,
             Inventarnummer = Inventarnummer,
             Bezeichnung = Bezeichnung,
             Beschreibung = Beschreibung

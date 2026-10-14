@@ -32,6 +32,10 @@
         </Setter>
     </Style>
 
+    <Style x:Key="KopfRechts" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+    </Style>
+
     <Style TargetType="DataGridRow">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">

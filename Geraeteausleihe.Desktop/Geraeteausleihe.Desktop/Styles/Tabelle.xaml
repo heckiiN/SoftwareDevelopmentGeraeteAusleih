@@ -82,4 +82,19 @@
         </DataTemplate.Triggers>
     </DataTemplate>
 
+    <DataTemplate x:Key="StatusSpalte">
+        <Border x:Name="Kennung" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left"
+                Background="{StaticResource ErfolgHell}">
+            <TextBlock x:Name="Wort" Text="Aktiv" FontSize="11" FontWeight="SemiBold"
+                       Foreground="{StaticResource ErfolgDunkel}" />
+        </Border>
+        <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding Aktiv}" Value="False">
+                <Setter TargetName="Kennung" Property="Background" Value="{StaticResource FehlerHell}" />
+                <Setter TargetName="Wort" Property="Text" Value="Inaktiv" />
+                <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource FehlerDunkel}" />
+            </DataTrigger>
+        </DataTemplate.Triggers>
+    </DataTemplate>
+
 </ResourceDictionary>

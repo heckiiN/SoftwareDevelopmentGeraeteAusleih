@@ -32,10 +32,13 @@ public partial class App : Application
         }
 
         var geraeteVerwaltung = new GeraeteVerwaltung(new SqliteGeraeteRepository(datenbank));
+        var entleiherVerwaltung = new EntleiherVerwaltung(new SqliteEntleiherRepository(datenbank));
 
         var dialoge = new DialogDienst();
 
-        var hauptViewModel = new HauptViewModel(new GeraeteViewModel(geraeteVerwaltung, dialoge));
+        var hauptViewModel = new HauptViewModel(
+            new GeraeteViewModel(geraeteVerwaltung, dialoge),
+            new EntleiherViewModel(entleiherVerwaltung));
         new Hauptfenster { DataContext = hauptViewModel }.Show();
     }
 }

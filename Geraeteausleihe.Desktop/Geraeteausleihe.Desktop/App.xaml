@@ -17,6 +17,9 @@
             <DataTemplate DataType="{x:Type vm:GeraeteViewModel}">
                 <views:GeraeteView />
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EntleiherViewModel}">
+                <views:EntleiherView />
+            </DataTemplate>
             <DataTemplate DataType="{x:Type vm:GeraetDialogViewModel}">
                 <views:GeraetDialogView />
             </DataTemplate>

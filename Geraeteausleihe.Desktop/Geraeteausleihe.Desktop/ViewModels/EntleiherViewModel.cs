@@ -24,6 +24,13 @@ public partial class EntleiherViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(Entleiher))]
     public partial string Suchtext { get; set; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(UmschaltenText))]
+    [NotifyCanExecuteChangedFor(nameof(AktivUmschaltenCommand))]
+    public partial Entleiher? AusgewaehlterEntleiher { get; set; }
+
+    public string UmschaltenText => AusgewaehlterEntleiher is { Aktiv: false } ? "Aktivieren" : "Deaktivieren";
+
     public IReadOnlyList<Entleiher> Entleiher => _alleEntleiher
         .Where(e => Passt(e.Name) || Passt(e.Kontakt))
         .ToList();
@@ -45,6 +52,23 @@ public partial class EntleiherViewModel : ObservableObject
             Laden();
         }
     }
+
+    [RelayCommand(CanExecute = nameof(IstEntleiherAusgewaehlt))]
+    private void AktivUmschalten()
+    {
+        var person = AusgewaehlterEntleiher!;
+        if (person.Aktiv)
+        {
+            _verwaltung.Deaktivieren(person);
+        }
+        else
+        {
+            _verwaltung.Aktivieren(person);
+        }
+        Laden();
+    }
+
+    private bool IstEntleiherAusgewaehlt() => AusgewaehlterEntleiher is not null;
 
     private void Laden()
     {

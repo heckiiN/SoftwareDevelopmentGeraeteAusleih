@@ -9,12 +9,14 @@
                     <TextBlock Text="Neuer Entleiher" />
                 </StackPanel>
             </Button>
+            <Button DockPanel.Dock="Right" Content="{Binding UmschaltenText}" Command="{Binding AktivUmschaltenCommand}"
+                    Style="{StaticResource SekundaerButton}" Margin="0,0,8,0" />
             <TextBox Text="{Binding Suchtext, UpdateSourceTrigger=PropertyChanged}" Tag="Entleiher suchen..."
                      Style="{StaticResource Suchfeld}" Width="280" HorizontalAlignment="Left" />
         </DockPanel>
 
         <Border Style="{StaticResource Karte}" VerticalAlignment="Top">
-            <DataGrid ItemsSource="{Binding Entleiher}">
+            <DataGrid ItemsSource="{Binding Entleiher}" SelectedItem="{Binding AusgewaehlterEntleiher}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="240"
                                         ElementStyle="{StaticResource Hervorgehoben}" />

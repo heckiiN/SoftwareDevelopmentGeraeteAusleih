@@ -8,7 +8,9 @@ public class DialogDienst : IDialogDienst
 {
     public bool Zeigen(DialogViewModel dialog)
     {
-        var fenster = new DialogFenster(dialog) { Owner = Application.Current.MainWindow };
+        var besitzer = Application.Current.Windows.OfType<Window>().FirstOrDefault(w => w.IsActive)
+            ?? Application.Current.MainWindow;
+        var fenster = new DialogFenster(dialog) { Owner = besitzer };
         return fenster.ShowDialog() == true;
     }
 

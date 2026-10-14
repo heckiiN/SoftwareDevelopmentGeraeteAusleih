@@ -122,6 +122,19 @@
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
 
+    <Style x:Key="LinkButton" TargetType="Button" BasedOn="{StaticResource TextButton}">
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{StaticResource Primaer}" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Foreground" Value="{StaticResource PrimaerDunkel}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- Kleiner Button, der nur ein Zeichen aus Segoe MDL2 Assets zeigt -->
     <Style x:Key="SymbolButton" TargetType="Button" BasedOn="{StaticResource TextButton}">
         <Setter Property="Width" Value="30" />

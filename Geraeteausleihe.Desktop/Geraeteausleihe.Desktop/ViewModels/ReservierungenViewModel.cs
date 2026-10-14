@@ -40,7 +40,7 @@ public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
     [RelayCommand]
     private void NeueReservierung()
     {
-        if (_dialoge.Zeigen(new ReservierungDialogViewModel(_reservierungen, _geraete, _entleiher)))
+        if (_dialoge.Zeigen(new ReservierungDialogViewModel(_reservierungen, _geraete, _entleiher, _dialoge)))
         {
             Aktualisieren();
         }

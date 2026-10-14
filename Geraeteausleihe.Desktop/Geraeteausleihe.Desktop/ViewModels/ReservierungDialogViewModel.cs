@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Geraeteausleihe.Core.Dienste;
 using Geraeteausleihe.Core.Domain;
+using Geraeteausleihe.Desktop.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
@@ -13,13 +14,17 @@ public partial class ReservierungDialogViewModel : DialogViewModel
     private static readonly CultureInfo Deutsch = CultureInfo.GetCultureInfo("de-DE");
 
     private readonly ReservierungsVerwaltung _verwaltung;
+    private readonly EntleiherVerwaltung _entleiherVerwaltung;
+    private readonly IDialogDienst _dialoge;
 
-    public ReservierungDialogViewModel(
-        ReservierungsVerwaltung verwaltung, GeraeteVerwaltung geraete, EntleiherVerwaltung entleiher)
+    public ReservierungDialogViewModel(ReservierungsVerwaltung verwaltung, GeraeteVerwaltung geraete,
+        EntleiherVerwaltung entleiher, IDialogDienst dialoge)
     {
         _verwaltung = verwaltung;
+        _entleiherVerwaltung = entleiher;
+        _dialoge = dialoge;
         Geraete = geraete.AlleLaden().Where(g => g.Aktiv).OrderBy(g => g.Bezeichnung).ToList();
-        Entleiher = entleiher.AlleLaden().Where(e => e.Aktiv).ToList();
+        Entleiher = AktiveEntleiher();
 
         var morgen = DateTime.Today.AddDays(1);
         Beginn = morgen.AddHours(9).ToString(Zeitformat, Deutsch);
@@ -30,7 +35,9 @@ public partial class ReservierungDialogViewModel : DialogViewModel
 
     // Deaktivierte Geräte und Entleiher dürfen nicht reserviert werden, deshalb fehlen sie hier.
     public IReadOnlyList<Geraet> Geraete { get; }
-    public IReadOnlyList<Entleiher> Entleiher { get; }
+
+    [ObservableProperty]
+    public partial IReadOnlyList<Entleiher> Entleiher { get; set; }
 
     [ObservableProperty]
     public partial Geraet? AusgewaehltesGeraet { get; set; }
@@ -55,6 +62,19 @@ public partial class ReservierungDialogViewModel : DialogViewModel
     partial void OnAusgewaehlterEntleiherChanged(Entleiher? value) => MeldungenLoeschen();
     partial void OnBeginnChanged(string value) => MeldungenLoeschen();
     partial void OnEndeChanged(string value) => MeldungenLoeschen();
+
+    // Der neue Entleiher wird sofort gespeichert. Bricht man danach die Reservierung ab,
+    // bleibt er trotzdem in den Stammdaten.
+    [RelayCommand]
+    private void NeuerEntleiher()
+    {
+        var dialog = new EntleiherDialogViewModel(_entleiherVerwaltung) { SpeichernText = "Speichern und auswählen" };
+        if (_dialoge.Zeigen(dialog) && dialog.Gespeichert is { } neu)
+        {
+            Entleiher = AktiveEntleiher();
+            AusgewaehlterEntleiher = Entleiher.Single(e => e.Id == neu.Id);
+        }
+    }
 
     [RelayCommand]
     private void VerfuegbarkeitPruefen()
@@ -112,6 +132,9 @@ public partial class ReservierungDialogViewModel : DialogViewModel
             Fehlermeldung = fehler.Message;
         }
     }
+
+    private IReadOnlyList<Entleiher> AktiveEntleiher() =>
+        _entleiherVerwaltung.AlleLaden().Where(e => e.Aktiv).ToList();
 
     private bool ZeitraumLesen(out DateTime beginn, out DateTime ende)
     {

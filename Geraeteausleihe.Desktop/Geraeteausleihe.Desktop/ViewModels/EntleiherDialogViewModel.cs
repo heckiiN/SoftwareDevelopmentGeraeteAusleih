@@ -20,6 +20,11 @@ public partial class EntleiherDialogViewModel : DialogViewModel
 
     public override string Titel => _vorhandener is null ? "Neuen Entleiher anlegen" : "Entleiher bearbeiten";
 
+    // Im Reservierungsformular heißt der Button „Speichern und auswählen“.
+    public string SpeichernText { get; init; } = "Speichern";
+
+    public Entleiher? Gespeichert { get; private set; }
+
     [ObservableProperty]
     public partial string Name { get; set; }
 
@@ -40,6 +45,7 @@ public partial class EntleiherDialogViewModel : DialogViewModel
         try
         {
             _verwaltung.Speichern(person);
+            Gespeichert = person;
             Beenden(true);
         }
         catch (FachlicherFehler fehler)

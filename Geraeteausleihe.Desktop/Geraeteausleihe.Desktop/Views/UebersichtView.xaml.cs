@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace Geraeteausleihe.Desktop.Views;
 
-public partial class PlatzhalterView : UserControl
+public partial class UebersichtView : UserControl
 {
-    public PlatzhalterView()
+    public UebersichtView()
     {
         InitializeComponent();
     }

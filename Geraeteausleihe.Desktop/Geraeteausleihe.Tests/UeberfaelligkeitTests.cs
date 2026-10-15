@@ -2,7 +2,7 @@ using Geraeteausleihe.Core.Domain;
 
 namespace Geraeteausleihe.Tests;
 
-// T7: Überfälligkeit wird aus Status und Uhrzeit berechnet. Gebucht ist der 01.11.2026 von 09:00 bis 12:00.
+// T7: Überfällig und heute fällig werden aus Status und Uhrzeit berechnet. Gebucht ist der 01.11.2026 von 09:00 bis 12:00.
 public class UeberfaelligkeitTests
 {
     private static DateTime Um(int stunde, int minute = 0) => new(2026, 11, 1, stunde, minute, 0);
@@ -39,5 +39,23 @@ public class UeberfaelligkeitTests
     public void Nie_ausgegebene_Reservierung_ist_nicht_ueberfaellig()
     {
         Assert.False(Gebucht().IstUeberfaellig(Um(14)));
+    }
+
+    [Theory]
+    [InlineData(10, true)]
+    [InlineData(12, true)]
+    [InlineData(13, false)]
+    public void Heute_faellig_bis_zum_Ende_danach_ueberfaellig(int stunde, bool erwartet)
+    {
+        Assert.Equal(erwartet, Ausgegeben().IstHeuteFaellig(Um(stunde)));
+    }
+
+    [Fact]
+    public void Rueckgabe_erst_morgen_ist_nicht_heute_faellig()
+    {
+        var reservierung = new Reservierung { Beginn = Um(9), Ende = Um(9).AddDays(1) };
+        reservierung.Ausgeben(Um(9));
+
+        Assert.False(reservierung.IstHeuteFaellig(Um(10)));
     }
 }

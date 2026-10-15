@@ -18,6 +18,10 @@ public class Reservierung
     // Genau zum Ende ist eine Ausleihe noch nicht überfällig.
     public bool IstUeberfaellig(DateTime jetzt) => Status == ReservierungsStatus.Ausgegeben && jetzt > Ende;
 
+    // Heute fällig: das Ende liegt auf heute und ist noch nicht verstrichen.
+    public bool IstHeuteFaellig(DateTime jetzt) =>
+        Status == ReservierungsStatus.Ausgegeben && Ende.Date == jetzt.Date && jetzt <= Ende;
+
     // Das Ende zählt nicht mehr zum Zeitraum: Endet eine Reservierung um 12:00,
     // darf die nächste um 12:00 beginnen.
     public bool UeberschneidetSich(DateTime beginn, DateTime ende) => beginn < Ende && ende > Beginn;

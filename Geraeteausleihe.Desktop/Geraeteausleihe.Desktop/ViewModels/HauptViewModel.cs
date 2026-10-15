@@ -4,13 +4,12 @@ namespace Geraeteausleihe.Desktop.ViewModels;
 
 public partial class HauptViewModel : ObservableObject
 {
-    public HauptViewModel(GeraeteViewModel geraete, EntleiherViewModel entleiher, ReservierungenViewModel reservierungen,
-        AusgabeViewModel ausgabe)
+    public HauptViewModel(UebersichtViewModel uebersicht, GeraeteViewModel geraete, EntleiherViewModel entleiher,
+        ReservierungenViewModel reservierungen, AusgabeViewModel ausgabe)
     {
         Navigation =
         [
-            new("Übersicht", "", "Geräteausleihe", "Vereinsinterne Geräteverwaltung",
-                new PlatzhalterViewModel("Übersicht")),
+            new("Übersicht", "", "Geräteausleihe", "Vereinsinterne Geräteverwaltung", uebersicht),
             new("Geräte", "", "Geräteausleihe", "Vereinsinterne Geräteverwaltung", geraete),
             new("Entleiher", "", "Entleiherverwaltung", "Übersicht aller eingetragenen Vereinsmitglieder",
                 entleiher),

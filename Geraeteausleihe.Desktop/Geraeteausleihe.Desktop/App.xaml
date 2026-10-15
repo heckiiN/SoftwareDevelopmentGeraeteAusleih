@@ -35,8 +35,8 @@
             <DataTemplate DataType="{x:Type vm:ReservierungDialogViewModel}">
                 <views:ReservierungDialogView />
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:PlatzhalterViewModel}">
-                <views:PlatzhalterView />
+            <DataTemplate DataType="{x:Type vm:UebersichtViewModel}">
+                <views:UebersichtView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>

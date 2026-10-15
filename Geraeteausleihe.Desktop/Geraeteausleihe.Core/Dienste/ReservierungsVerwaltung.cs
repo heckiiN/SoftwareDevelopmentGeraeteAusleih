@@ -13,6 +13,8 @@ public class ReservierungsVerwaltung(
 
     public bool IstUeberfaellig(Reservierung reservierung) => reservierung.IstUeberfaellig(zeit.Jetzt);
 
+    public bool IstHeuteFaellig(Reservierung reservierung) => reservierung.IstHeuteFaellig(zeit.Jetzt);
+
     // Für „Verfügbarkeit prüfen“: liefert die blockierende Reservierung oder null.
     public Reservierung? VerfuegbarkeitPruefen(int geraetId, DateTime beginn, DateTime ende)
     {

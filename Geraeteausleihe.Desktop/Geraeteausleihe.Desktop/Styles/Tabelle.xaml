@@ -116,6 +116,10 @@
                 <Setter TargetName="Kennung" Property="Background" Value="{StaticResource Hover}" />
                 <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource TextGedaempft}" />
             </DataTrigger>
+            <DataTrigger Binding="{Binding HeuteFaellig}" Value="True">
+                <Setter TargetName="Kennung" Property="Background" Value="{StaticResource WarnungHell}" />
+                <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource WarnungDunkel}" />
+            </DataTrigger>
             <!-- Steht als letzter Trigger, damit er die Farbe von Ausgegeben überschreibt -->
             <DataTrigger Binding="{Binding Ueberfaellig}" Value="True">
                 <Setter TargetName="Kennung" Property="Background" Value="{StaticResource FehlerHell}" />

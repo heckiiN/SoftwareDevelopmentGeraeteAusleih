@@ -42,6 +42,7 @@ public partial class App : Application
         var dialoge = new DialogDienst();
 
         var hauptViewModel = new HauptViewModel(
+            new UebersichtViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge),
             new GeraeteViewModel(geraeteVerwaltung, dialoge),
             new EntleiherViewModel(entleiherVerwaltung, dialoge),
             new ReservierungenViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge),

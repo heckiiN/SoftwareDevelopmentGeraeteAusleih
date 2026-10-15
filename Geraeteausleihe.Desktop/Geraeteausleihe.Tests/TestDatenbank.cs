@@ -22,15 +22,23 @@ public sealed class TestDatenbank : IDisposable
     // Simuliert einen Datenbankfehler: Jeder Schreibversuch endet danach mit einer SqliteException.
     public void Schreibschutz()
     {
-        SqliteConnection.ClearAllPools();
+        PoolLeeren();
         File.SetAttributes(_pfad, FileAttributes.ReadOnly);
     }
 
     public void Dispose()
     {
-        // Microsoft.Data.Sqlite hält Verbindungen im Pool offen, sonst ließe sich die Datei nicht löschen.
-        SqliteConnection.ClearAllPools();
+        PoolLeeren();
         File.SetAttributes(_pfad, FileAttributes.Normal);
         File.Delete(_pfad);
+    }
+
+    // Microsoft.Data.Sqlite hält Verbindungen im Pool offen, sonst ließe sich die Datei weder sperren noch löschen.
+    // Geleert wird nur der Pool dieser Datei: ClearAllPools träfe auch die Verbindungen anderer Testklassen,
+    // die parallel laufen, mitten in deren Befehlen.
+    private void PoolLeeren()
+    {
+        using var verbindung = Datenbank.Oeffnen();
+        SqliteConnection.ClearPool(verbindung);
     }
 }

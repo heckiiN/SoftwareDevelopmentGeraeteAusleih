@@ -11,6 +11,8 @@ public class ReservierungsVerwaltung(
 {
     public IReadOnlyList<Reservierung> AlleLaden() => reservierungen.AlleLaden();
 
+    public bool IstUeberfaellig(Reservierung reservierung) => reservierung.IstUeberfaellig(zeit.Jetzt);
+
     // Für „Verfügbarkeit prüfen“: liefert die blockierende Reservierung oder null.
     public Reservierung? VerfuegbarkeitPruefen(int geraetId, DateTime beginn, DateTime ende)
     {

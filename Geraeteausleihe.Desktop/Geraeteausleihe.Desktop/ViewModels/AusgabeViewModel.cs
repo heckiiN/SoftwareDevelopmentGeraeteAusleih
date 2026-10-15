@@ -56,6 +56,7 @@ public partial class AusgabeViewModel : ObservableObject, IAktualisierbar
             .Where(r => r.Status is ReservierungsStatus.Reserviert or ReservierungsStatus.Ausgegeben)
             .OrderBy(r => r.Beginn)
             .Select(r => new AusgabeZeile(r, geraete[r.GeraetId], entleiher[r.EntleiherId],
+                _reservierungen.IstUeberfaellig(r),
                 r.Status == ReservierungsStatus.Reserviert ? _reservierungen.AusgabeHindernis(r, alle) : null))
             .ToList();
     }

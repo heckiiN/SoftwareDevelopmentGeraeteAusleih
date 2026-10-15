@@ -129,6 +129,20 @@ public sealed class ReservierungsVerwaltungTests : IDisposable
     }
 
     [Fact]
+    public void Ueberfaelligkeit_richtet_sich_nach_der_Zeitquelle()
+    {
+        var reservierung = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));
+        _verwaltung.Ausgeben(reservierung.Id);
+        var gespeichert = Assert.Single(_verwaltung.AlleLaden());
+
+        _zeit.Jetzt = Um(12);
+        Assert.False(_verwaltung.IstUeberfaellig(gespeichert));
+
+        _zeit.Jetzt = Um(13);
+        Assert.True(_verwaltung.IstUeberfaellig(gespeichert));
+    }
+
+    [Fact]
     public void Noch_ausgegebenes_Geraet_blockiert_die_Folgeausgabe_mit_Grund()
     {
         var erste = _verwaltung.Reservieren(_beamer.Id, _max.Id, Um(9), Um(12));

@@ -82,7 +82,8 @@ public partial class ReservierungenViewModel : ObservableObject, IAktualisierbar
         var entleiher = _entleiher.AlleLaden().ToDictionary(e => e.Id, e => e.Name);
 
         _alleZeilen = _reservierungen.AlleLaden()
-            .Select(r => new ReservierungsZeile(r, geraete[r.GeraetId], entleiher[r.EntleiherId]))
+            .Select(r => new ReservierungsZeile(r, geraete[r.GeraetId], entleiher[r.EntleiherId],
+                _reservierungen.IstUeberfaellig(r)))
             .ToList();
         OnPropertyChanged(nameof(Zeilen));
     }

@@ -116,6 +116,11 @@
                 <Setter TargetName="Kennung" Property="Background" Value="{StaticResource Hover}" />
                 <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource TextGedaempft}" />
             </DataTrigger>
+            <!-- Steht als letzter Trigger, damit er die Farbe von Ausgegeben überschreibt -->
+            <DataTrigger Binding="{Binding Ueberfaellig}" Value="True">
+                <Setter TargetName="Kennung" Property="Background" Value="{StaticResource FehlerHell}" />
+                <Setter TargetName="Wort" Property="Foreground" Value="{StaticResource FehlerDunkel}" />
+            </DataTrigger>
         </DataTemplate.Triggers>
     </DataTemplate>
 

@@ -14,6 +14,10 @@ public class Reservierung
     // Stornierte und zurückgegebene Vorgänge geben ihren Zeitraum wieder frei.
     public bool BlockiertZeitraum => Status is ReservierungsStatus.Reserviert or ReservierungsStatus.Ausgegeben;
 
+    // Überfällig wird nie gespeichert, sondern immer aus Status und Uhrzeit berechnet.
+    // Genau zum Ende ist eine Ausleihe noch nicht überfällig.
+    public bool IstUeberfaellig(DateTime jetzt) => Status == ReservierungsStatus.Ausgegeben && jetzt > Ende;
+
     // Das Ende zählt nicht mehr zum Zeitraum: Endet eine Reservierung um 12:00,
     // darf die nächste um 12:00 beginnen.
     public bool UeberschneidetSich(DateTime beginn, DateTime ende) => beginn < Ende && ende > Beginn;

@@ -37,7 +37,8 @@ public partial class App : Application
 
         var geraeteVerwaltung = new GeraeteVerwaltung(geraete, reservierungen);
         var entleiherVerwaltung = new EntleiherVerwaltung(entleiher, reservierungen);
-        var reservierungsVerwaltung = new ReservierungsVerwaltung(reservierungen, geraete, entleiher, new Systemzeit());
+        var zeit = new Systemzeit();
+        var reservierungsVerwaltung = new ReservierungsVerwaltung(reservierungen, geraete, entleiher, zeit);
 
         var dialoge = new DialogDienst();
 
@@ -46,7 +47,8 @@ public partial class App : Application
             new GeraeteViewModel(geraeteVerwaltung, dialoge),
             new EntleiherViewModel(entleiherVerwaltung, dialoge),
             new ReservierungenViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge),
-            new AusgabeViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge));
+            new AusgabeViewModel(reservierungsVerwaltung, geraeteVerwaltung, entleiherVerwaltung, dialoge),
+            zeit);
         new Hauptfenster { DataContext = hauptViewModel }.Show();
     }
 }

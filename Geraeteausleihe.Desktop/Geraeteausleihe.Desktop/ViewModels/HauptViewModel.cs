@@ -1,12 +1,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using Geraeteausleihe.Core.Dienste;
 
 namespace Geraeteausleihe.Desktop.ViewModels;
 
 public partial class HauptViewModel : ObservableObject
 {
+    private readonly IZeitquelle _zeit;
+
     public HauptViewModel(UebersichtViewModel uebersicht, GeraeteViewModel geraete, EntleiherViewModel entleiher,
-        ReservierungenViewModel reservierungen, AusgabeViewModel ausgabe)
+        ReservierungenViewModel reservierungen, AusgabeViewModel ausgabe, IZeitquelle zeit)
     {
+        _zeit = zeit;
+        Stand = "";
         Navigation =
         [
             new("Übersicht", "", "Geräteausleihe", "Vereinsinterne Geräteverwaltung", uebersicht),
@@ -26,11 +31,16 @@ public partial class HauptViewModel : ObservableObject
     [ObservableProperty]
     public partial Navigationspunkt AktuellerPunkt { get; set; }
 
+    // Zeigt, wann die angezeigten Daten geladen wurden.
+    [ObservableProperty]
+    public partial string Stand { get; set; }
+
     partial void OnAktuellerPunktChanged(Navigationspunkt value)
     {
         if (value.Seite is IAktualisierbar seite)
         {
             seite.Aktualisieren();
+            Stand = $"Stand: {_zeit.Jetzt:dd.MM.yyyy, HH:mm} Uhr";
         }
     }
 }

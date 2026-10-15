@@ -51,6 +51,8 @@
                     BorderBrush="{StaticResource Rahmen}" BorderThickness="0,0,0,1" Padding="24,16">
                 <DockPanel>
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Stand}" FontSize="12" />
+                        <Rectangle Width="1" Height="14" Fill="{StaticResource Rahmen}" Margin="14,0" />
                         <Ellipse Width="7" Height="7" Fill="{StaticResource Erfolg}" Margin="0,0,8,0" />
                         <TextBlock Text="Lokaler Arbeitsplatz" FontSize="12" />
                     </StackPanel>

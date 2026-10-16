@@ -12,7 +12,7 @@ Entstanden im IU-Kurs DLBSEPPSD01_D „Projekt: Software Development“.
 ## Einrichtung
 
 ```sh
-git clone https://github.com/NiklasHeckmann/SoftwareDevelopmentGeraeteAusleih.git
+git clone https://github.com/heckiiN/SoftwareDevelopmentGeraeteAusleih.git
 cd SoftwareDevelopmentGeraeteAusleih/Geraeteausleihe.Desktop
 dotnet build Geraeteausleihe.Desktop.slnx
 ```
